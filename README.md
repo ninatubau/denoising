@@ -93,4 +93,6 @@ Outputs:
 python measure.py path/to/data/dataset 
 ```
 
-##Acknowledgment
+## Acknowledgment
+
+Code borrows heavily from [CSBDeep](https://github.com/CSBDeep/CSBDeep). 
