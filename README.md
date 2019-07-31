@@ -38,21 +38,59 @@ The dataset has to follow a particular structure as following:
 
 ## Data preparation and training
 
+Preparation of the data and training on noise and clean images
+
 Arguments:
 - data_path: Path to your input data: noisy (low intensity) and clean(high intensity) folder with .tif files
-- *axes: Axes to indicate the semantic order of the images axes. Examples : ZYX, CXY ...* 
+- *axes: Axes to indicate the semantic order of the images. Examples : ZYX, CXY ...* 
 - *validation_split: Ratio of validation data for training*
 - *train_steps_per_epochs: Number of training steps per epochs*
 - *train_epochs: Number of epochs*
 - *model_name: Name of the model saved in the models folder*
 
 *optional arguments*
+
 Outputs: 
 - Plot of noisy/clean data
 - Plot of loss
-- CSV file "oss.csv" with values of loss
+- Creation CSV file *loss.csv* with values of loss
 
 ```bash
-python training.py path/to/data --optional_parameter value
+python training.py path/to/dataset --optional_parameter value
 ```
 
+## Prediction
+
+Prediction of noisy images -> DENOISING
+
+Arguments:
+- path_indata: Path to to_predict folder data
+- name_model: Name of the .h5 file to use as trained model
+- *axes: axes to indicate the semantic order of the images. Examples : ZYX, CXY ...*
+- *plot_prediction: True or False to plot some images after the prediction*
+
+*optional arguments*
+
+Output:
+- Plot of evaluated images
+
+```bash
+python prediction.py path/to/data/to_predict --optional_parameter value
+```
+
+
+## Measure
+
+Measurement of the results using Signal to noise ratio, structural similarity index and jaccard index
+
+Arguments:
+- data_path: Path to your data
+
+Outputs:
+- Box plot comparing noisy/ground_truth and result/ground_truth based on several metrics
+
+```bash
+python measure.py path/to/data/dataset 
+```
+
+##Acknowledgment

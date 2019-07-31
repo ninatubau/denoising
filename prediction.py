@@ -29,7 +29,7 @@ import argparse
 parser = argparse.ArgumentParser(description='Prediction arguments')
 parser.add_argument('path_indata', type=str,help='Path to your input data: read the noisy image')
 parser.add_argument('path_outdata', type=str,help='Path to your output data: write the prediction')
-parser.add_argument('axes', type=str,help='Axes to indicate the semantic order of the images axes. Examples : ZYX, CXY ... ')
+parser.add_argument('--axes', type=str,help='Axes to indicate the semantic order of the images axes. Examples : ZYX, CXY ... ')
 parser.add_argument('--name_model', type=str,default ='my_model',help='Name of the model to use')
 parser.add_argument('--plot_prediction', type=bool,default =False,help='Plotting images of the prediction : True or False')
 
