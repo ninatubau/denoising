@@ -2,8 +2,8 @@
 
 This is an application of CSBDeep network for denoising microscopy images.
 
-<img src="imgs/noisy.jpg" width="100px"/>
-<img src="imgs/denoised.jpg" width="100px"/>
+<img src="imgs/noisy.jpg" width="500px"/>
+<img src="imgs/denoised.jpg" width="500px"/>
 
 [Martin Weigert](https://www.biorxiv.org/content/10.1101/236463v1)
 
@@ -34,4 +34,4 @@ git clone https://github.com/ninatubau/denoising.git
 
 The dataset has to follow a particular structure as following:
 
-<img src="imgs/dataset_structure.png" width="100px"/>
+<img src="imgs/dataset_structure.png" width="500px"/>
