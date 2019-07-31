@@ -5,7 +5,7 @@ This is an application of CSBDeep network for denoising microscopy images.
 <img src="imgs/noisy.jpg" width="500px"/>
 <img src="imgs/denoised.jpg" width="500px"/>
 
-[Martin Weigert](https://www.biorxiv.org/content/10.1101/236463v1)
+
 
 ## Setup
 
@@ -34,7 +34,7 @@ git clone https://github.com/ninatubau/denoising.git
 
 The dataset has to follow a particular structure as following:
 
-<img src="imgs/dataset_structure.png" width="800px"/>
+<img src="imgs/dataset_structure.png" width="900px"/>
 
 ## Data preparation and training
 
@@ -95,4 +95,4 @@ python measure.py path/to/data/dataset
 
 ## Acknowledgment
 
-Code borrows heavily from [CSBDeep](https://github.com/CSBDeep/CSBDeep). 
+Code borrows heavily from [CSBDeep](https://github.com/CSBDeep/CSBDeep) published on [Content-Aware Image Restoration: Pushing the Limits of Fluorescence Microscopy](https://www.biorxiv.org/content/10.1101/236463v1)
