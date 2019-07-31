@@ -94,9 +94,9 @@ python measure.py path/to/data/dataset
 ```
 
 ## TO DO
-[x] Documentation
-[ ] Link website with results (images and videos)
-[ ] Clean code
+- [x] Documentation
+- [ ] Link website with results (images and videos)
+- [ ] Clean code
 
 ## Acknowledgment
 
