@@ -2,8 +2,8 @@
 
 This is an application of CSBDeep network for denoising microscopy images.
 
-<img src="imgs/noisy.jpg" width="400px" align="left"/>
-<img src="imgs/denoised.jpg" width="400px" align="right"/>
+<img src="imgs/noisy.jpg" width="500px" align="left" alt="Before denoising"/>
+<img src="imgs/denoised.jpg" width="500px" align="right" alt="After denoising"/>
 
 
 
