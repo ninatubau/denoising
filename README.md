@@ -93,6 +93,11 @@ Outputs:
 python measure.py path/to/data/dataset 
 ```
 
+## TO DO
+[x] Documentation
+[ ] Link website with results (images and videos)
+[ ] Clean code
+
 ## Acknowledgment
 
 Code borrows heavily from [CSBDeep](https://github.com/CSBDeep/CSBDeep) published on [Content-Aware Image Restoration: Pushing the Limits of Fluorescence Microscopy](https://www.biorxiv.org/content/10.1101/236463v1)
