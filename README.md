@@ -24,7 +24,7 @@ pip install tensorflow
 pip install csbdeep 
 ```
 OR
-Since installing TensorFlow with its dependencies (CUDA, cuDNN) can be challenging, there is a ready-to-use [Docker container](https://hub.docker.com/r/tboo/csbdeep_gpu_docker/) as an alternative to get started more quickly. 
+since installing TensorFlow with its dependencies (CUDA, cuDNN) can be challenging, there is a ready-to-use [Docker container](https://hub.docker.com/r/tboo/csbdeep_gpu_docker/) as an alternative to get started more quickly. 
 
 - Clone this repository
 ```bash
@@ -35,3 +35,24 @@ git clone https://github.com/ninatubau/denoising.git
 The dataset has to follow a particular structure as following:
 
 <img src="imgs/dataset_structure.png" width="800px"/>
+
+## Data preparation and training
+
+Arguments:
+- data_path: Path to your input data: noisy (low intensity) and clean(high intensity) folder with .tif files
+- *axes: Axes to indicate the semantic order of the images axes. Examples : ZYX, CXY ...* 
+- *validation_split: Ratio of validation data for training*
+- *train_steps_per_epochs: Number of training steps per epochs*
+- *train_epochs: Number of epochs*
+- *model_name: Name of the model saved in the models folder*
+
+*optional arguments*
+Outputs: 
+- Plot of noisy/clean data
+- Plot of loss
+- CSV file "oss.csv" with values of loss
+
+```bash
+python training.py path/to/data --optional_parameter value
+```
+

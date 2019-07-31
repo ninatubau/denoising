@@ -35,7 +35,6 @@ parser.add_argument('--axes', type=str, default='XYZ',help='Axes to indicate the
 parser.add_argument('--validation_split', type=int,default =0.1,help='Ratio of validation data for training')
 parser.add_argument('--train_steps_per_epochs', type=int,default =100,help='Number of training steps per epochs')
 parser.add_argument('--train_epochs', type=int,default =10,help='Number of epochs')
-parser.add_argument('--plot_evaluation', type=bool,default =False,help='Plotting images to evaluate the result : True or False')
 parser.add_argument('--model_name', type=str,default ='my_model',help='Name of the model to save')
 
 def main():
@@ -46,7 +45,6 @@ def main():
 	validation_split = args.validation_split
 	train_steps_per_epochs =args.train_steps_per_epochs
 	train_epochs = args.train_epochs
-	plot_evaluation = args.plot_evaluation
 	model_name = args.model_name
 
 	# The TensorFlow backend uses all available GPU memory by default, hence it can be useful to limit it:
@@ -59,7 +57,7 @@ def main():
 	# Load training data generated via [1_datagen.ipynb](1_datagen.ipynb), use 10% as validation data.
 
 
-	(X,Y), (X_val,Y_val), axes = load_training_data('data/my_training_data.npz', validation_split, verbose=True)
+	(X,Y), (X_val,Y_val), axes = load_training_data('data/data_prepared.npz', validation_split, verbose=True)
 
 	c = axes_dict(axes)['C']
 	n_channel_in, n_channel_out = X.shape[c], Y.shape[c]
@@ -106,28 +104,6 @@ def main():
 	with open('loss.csv', 'w') as f:
     		for key in history.history.keys():
         		f.write("%s,%s\n"%(key,history.history[key]))
-	# Plot final training history (available in TensorBoard during training):
-
-
-	# # Evaluation
-	# 
-	# Example results for validation images.
-
-	
-
-	if (plot_evaluation):
-		plt.figure(figsize=(12,7))
-		_P = model.keras_model.predict(X_val[:5])
-		if config.probabilistic:
-		    _P = _P[...,:(_P.shape[-1]//2)]
-		plot_some(X_val[:5,:,:,:,0],Y_val[:5,:,:,:,0],_P[:,:,:,:,0],pmax=99.5)
-		plt.suptitle('5 example validation patches\n'      
-			     'top row: input (source),  '          
-			     'middle row: target (ground truth),  '
-			     'bottom row: predicted from source')
-		fig1 = plt.gcf()
-		fig1.savefig('/stornext/Img/data/prkfs1/m/Microscopy/Nina_Tubau/img_5epochs.png',transparent=True)
-
 
 	# # Export model to be used with CSBDeep **Fiji** plugins and **KNIME** workflows
 	# 
