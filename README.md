@@ -34,4 +34,4 @@ git clone https://github.com/ninatubau/denoising.git
 
 The dataset has to follow a particular structure as following:
 
-<img src="imgs/dataset_structure.png" width="500px"/>
+<img src="imgs/dataset_structure.png" width="800px"/>
