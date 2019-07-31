@@ -2,8 +2,8 @@
 
 This is an application of CSBDeep network for **denoising microscopy images**. It is also possible to load other pre-trained models (.h5 files) to denoise images. Finally, it also gives a method to evaluate denoising through different metrics such as signal-to-noise ratio, structural similarity index and jaccard index.
 
-<img src="imgs/noisy.jpg" width="400px" align="left" alt="Before denoising" title="Before denoising"/>
-<img src="imgs/denoised.jpg" width="400px" align="right" alt="After denoising" title="After denoising"/>
+<img src="imgs/noisy.jpg" width="450px" align="left" alt="Before denoising" title="Before denoising"/>
+<img src="imgs/denoised.jpg" width="450px" align="right" alt="After denoising" title="After denoising"/>
 
 
 
