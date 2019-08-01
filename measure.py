@@ -76,9 +76,9 @@ def main():
     
     args = parser.parse_args()
     data_path = args.data_path
-    path_in = data_path+'/noisy/'
-    path_out = data_path+'/predicted/'
-    path_target = data_path+'/clean/'
+    path_in = data_path+'noisy/'
+    path_out = data_path+'predicted/'
+    path_target = data_path+'clean/'
     
     for file_ in sorted(os.listdir(path_in)):
         
