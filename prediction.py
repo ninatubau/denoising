@@ -28,8 +28,8 @@ import argparse
 
 parser = argparse.ArgumentParser(description='Prediction arguments')
 parser.add_argument('path_data', type=str,help='Path to your input data: read the to_predict image')
+parser.add_argument('name_model', type=str,default ='my_model',help='Name of the model to use')
 parser.add_argument('--axes', type=str,default='ZYX',help='Axes to indicate the semantic order of the images axes. Examples : ZYX, CXY ... ')
-parser.add_argument('--name_model', type=str,default ='my_model',help='Name of the model to use')
 parser.add_argument('--plot_prediction', type=bool,default =False,help='Plotting images of the prediction : True or False')
 
 def main():

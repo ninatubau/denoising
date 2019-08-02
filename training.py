@@ -50,17 +50,12 @@ def main():
 	# The TensorFlow backend uses all available GPU memory by default, hence it can be useful to limit it:
 	limit_gpu_memory(fraction=1/2)
 
-	#call datagen to generate the data properly and save `data/data_preparednpz``
+	#call datagen to generate the data properly and save to `data/data_prepared.npz``
 	data_generation(path_data,axes)
 
 
-	# Load training data generated via [1_datagen.ipynb](1_datagen.ipynb), use 10% as validation data.
-
-
-	(X,Y), (X_val,Y_val), axes = load_training_data('data/data_prepared.npz', validation_split, verbose=True)
-
-	c = axes_dict(axes)['C']
-	n_channel_in, n_channel_out = X.shape[c], Y.shape[c]
+	# Load training data generated via [1_datagen.ipynb](1_datagen.ipynb), use 10% as validation data by default
+	(X,Y), (X_val,Y_val), axes = load_training_data('data/data_prepared.npz', validation_split, verbose=True
 
 
 	# # CARE model
@@ -72,13 +67,7 @@ def main():
 	# * the loss function, and
 	# * whether the model is probabilistic or not.
 	# 
-	# The defaults should be sensible in many cases, so a change should only be necessary if the training process fails.  
-	# 
-	# ---
-	# 
-	# <span style="color:red;font-weight:bold;">Important</span>: Note that for this notebook we use a very small number of update steps per epoch for immediate feedback, whereas this number should be increased considerably (e.g. `train_steps_per_epoch=400`) to obtain a well-trained model.
-
-
+	# The defaults should be sensible in many cases, so a change should only be necessary if the training process fails. 
 
 	config = Config(axes, n_channel_in=1, n_channel_out=1, train_steps_per_epoch=train_steps_per_epochs,train_epochs=train_epochs)
 
@@ -94,24 +83,17 @@ def main():
 	# 
 	# You can start TensorBoard from the current working directory with `tensorboard --logdir=.`
 	# Then connect to [http://localhost:6006/](http://localhost:6006/) with your browser.
-	# 
-	# ![](http://csbdeep.bioimagecomputing.com/img/tensorboard_denoising3D.png)
+
 
 	history = model.train(X,Y, validation_data=(X_val,Y_val))
 	plot_history(history,['loss','val_loss'],['mse','val_mse','mae','val_mae'])
 	
-
+	#save model results in loss.csv file
 	with open('loss.csv', 'w') as f:
     		for key in history.history.keys():
         		f.write("%s,%s\n"%(key,history.history[key]))
 
 	# # Export model to be used with CSBDeep **Fiji** plugins and **KNIME** workflows
-	# 
-	# See https://github.com/CSBDeep/CSBDeep_website/wiki/Your-Model-in-Fiji for details.
-
-	# In[13]:
-
-
 	model.export_TF()
 
 if __name__ == '__main__':

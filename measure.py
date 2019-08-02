@@ -27,32 +27,54 @@ parser.add_argument('data_path', type=str,help='Path to your input data: noisy (
 
 
 def SNR(im_ref,im_test):
+    '''
+    Computes SNR between reference and test images
+    Input: Reference and test image
+    Ouput: signal to noise ratio
+    '''
+
     sum_ref = (im_ref**2).sum()
     diff = ((im_ref-im_test)**2).sum()
     snr = (10*math.log10(sum_ref/diff))
     return snr
 
-def max_thresholding(im_ref,im_test):
-    max_ref = np.max(im_ref,axis=0)
-    max_test = np.max(im_test,axis=0)
-    thresh_ref = threshold_mean(max_ref)
-    binary_ref = max_ref > thresh_ref
-    thresh_test = threshold_mean(max_test)
-    binary_test = max_test > thresh_test
-    return binary_ref, binary_test
+def max_thresholding(im):
+    '''Computes maximum projection and binarisation on images
+    Input: Image to process
+    Ouput: Image after Maximum projection and binarization
+    '''
+
+    max_im = np.max(im,axis=0)
+    thresh = threshold_mean(max_im)
+    binary_im = max_im > thresh
+    return binary_im
 
 def jaccard_measure(im_ref, im_test):
-    binary_ref, binary_test = max_thresholding(im_ref,im_test)
+    '''Computes jaccard index between reference and test images after max projection and binarisation
+    Input: Image to process
+    Ouput: jaccard index
+    '''
+
+    binary_ref = max_thresholding(im_ref)
+    binary_test = max_thresholding(im_test)
     jacc_sc = jaccard_score(binary_test,binary_ref,average='weighted')
     return jacc_sc
 
 def ssim_f(im_ref,im_test):
-    binary_ref, binary_test = max_thresholding(im_ref,im_test)
+    '''Computes structural similarity between reference and test images after max projection and binarisation
+    Input: Image to process
+    Ouput: Structural similarity index
+    '''
+
+    binary_ref = max_thresholding(im_ref)
+    binary_test = max_thresholding(im_test)
     ssim_in = ssim(binary_ref,binary_test,multichannel=True)
     return ssim_in
 
 def bar_plot(data,title):
-    #plt.figure(figsize=(20,20))
+    '''Plot mean values of metrics in box plot
+    '''
+
     plt.title(title)
     medianprops = {'color': 'magenta', 'linewidth': 2}
     flierprops = {'color': 'black', 'marker': 'x'}
@@ -61,6 +83,8 @@ def bar_plot(data,title):
     plt.show()
 
 def save_csv(data,title):
+    '''Save values in csv file
+    '''
     with open('metrics.csv', 'w') as f:
     	for i in range(len(data)):
         	f.write("%s,%s\n"%(title[i],data[i]))
@@ -76,11 +100,11 @@ def main():
     
     args = parser.parse_args()
     data_path = args.data_path
-    path_in = data_path+'noisy/'
+    path_in = data_path+'to_predict/'
     path_out = data_path+'predicted/'
     path_target = data_path+'clean/'
     
-    for file_ in sorted(os.listdir(path_in)):
+    for file_ in sorted(os.listdir(path_out)):
         
         im_target = io.imread(path_target+file_)
         im_input = io.imread(path_in+file_)
@@ -108,11 +132,8 @@ def main():
         SNR_out.append(snr_out)
         data_snr = [SNR_in,SNR_out]
 
-    #bar_plot(data_snr,data_jacc,data_ssim)
     DATA = [data_snr,data_jacc,data_ssim]
     num_metrics = len(DATA)
-    #fig,ax = plt.subplot()
-    #plt.subplot(1,3)
     fig=plt.figure()
     for count,value in enumerate(DATA):
         title =['Signal to Noise Ratio','Jaccard index','Structural similarity index']
