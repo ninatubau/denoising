@@ -12,13 +12,12 @@ from __future__ import print_function, unicode_literals, absolute_import, divisi
 import os
 import sys
 
-file_dir = os.path.dirname('./../../')
-sys.path.append(file_dir)
+#file_dir = os.path.dirname('./../../')
+#sys.path.append(file_dir)
 
 import numpy as np
 import matplotlib.pyplot as plt
-#get_ipython().run_line_magic('matplotlib', 'inline')
-#get_ipython().run_line_magic('config', "InlineBackend.figure_format = 'retina'")
+
 
 from tifffile import imread
 from csbdeep.utils import axes_dict, plot_some, plot_history
@@ -54,7 +53,7 @@ def main():
 	data_generation(path_data,axes)
 
 
-	# Load training data generated via [1_datagen.ipynb](1_datagen.ipynb), use 10% as validation data by default
+	# Load training data generated via [datagen.py, use 10% as validation data by default
 	(X,Y), (X_val,Y_val), axes = load_training_data('data/data_prepared.npz', validation_split, verbose=True
 
 
@@ -66,8 +65,7 @@ def main():
 	# * the number of parameter updates per epoch,
 	# * the loss function, and
 	# * whether the model is probabilistic or not.
-	# 
-	# The defaults should be sensible in many cases, so a change should only be necessary if the training process fails. 
+	
 
 	config = Config(axes, n_channel_in=1, n_channel_out=1, train_steps_per_epoch=train_steps_per_epochs,train_epochs=train_epochs)
 
@@ -79,8 +77,7 @@ def main():
 	# # Training
 	# 
 	# Training the model will likely take some time. We recommend to monitor the progress with [TensorBoard](https://www.tensorflow.org/programmers_guide/summaries_and_tensorboard) (example below), which allows you to inspect the losses during training.
-	# Furthermore, you can look at the predictions for some of the validation images, which can be helpful to recognize problems early on.
-	# 
+	
 	# You can start TensorBoard from the current working directory with `tensorboard --logdir=.`
 	# Then connect to [http://localhost:6006/](http://localhost:6006/) with your browser.
 
