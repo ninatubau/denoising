@@ -1,7 +1,3 @@
-
-#!/usr/bin/env python
-# coding: utf-8
-
 # This python code demonstrates applying a CARE model for a 3D denoising task, assuming that training was already completed via training.py.  
 # The trained model is assumed to be located in the folder `models` with the name given by the user (default `my_model`).
 # 
@@ -11,8 +7,6 @@ from __future__ import print_function, unicode_literals, absolute_import, divisi
 import os
 import sys
 
-file_dir = os.path.dirname('./../../')
-sys.path.append(file_dir)
 
 
 import numpy as np
@@ -52,33 +46,18 @@ def main():
 	model = CARE(config=None, name=name_model, basedir='models')
 
 
-	# ## Apply CARE network to raw image
+	#Apply CARE network to raw image
 
 	for file_ in sorted(os.listdir(path_data+'to_predict/')):
-	    #if (file.startswith('1')):
 		print('Reading file: ',file_)
 		start =time.time()
 		x = imread(path_data+'to_predict/'+file_)
-        #x = np.expand_dims(x,axis=3)
-		#mid = int(x.shape[0]/2)
-		#restored_1 = model.predict(x[0:mid], axes)
-		#restored_2 = model.predict(x[mid:],axes)
-		#restored = np.concatenate((restored_1,restored_2),axis=0)
+		#n_tiles to avoid *Out of memory* problems during `model.predict` 
 		restored=model.predict(x,axes,n_tiles=n_tiles)
 		end = time.time()
 		print('Prediction time %s sec ' %(end - start))
 		print('Saving file: ',file_)
 		imsave(path_data+'predicted/'+file_, restored)
-
-
-	# Alternatively, one can directly set `n_tiles` to avoid the time overhead from multiple retries in case of memory issues.
-	# 
-	# **Note**: *Out of memory* problems during `model.predict` can also indicate that the GPU is used by another process. In particular, shut down the training notebook before running the prediction (you may need to restart this notebook).
-
-
-	# # Raw low/high-SNR image and denoised image via CARE network
-	# 
-	# Plot the test stack pair and the predicted restored stack (middle).
 
 
 
