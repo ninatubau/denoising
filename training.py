@@ -54,7 +54,7 @@ def main():
 
 
 	# Load training data generated via [datagen.py, use 10% as validation data by default
-	(X,Y), (X_val,Y_val), axes = load_training_data('data/data_prepared.npz', validation_split, verbose=True
+	(X,Y), (X_val,Y_val), axes = load_training_data('data/data_prepared.npz', validation_split, verbose=True)
 
 
 	# # CARE model
