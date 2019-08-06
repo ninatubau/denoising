@@ -24,7 +24,7 @@ import time
 import argparse 
 
 parser = argparse.ArgumentParser(description='Prediction arguments')
-parser.add_argument('path_data', type=str,help='Path to your input data: read the to_predict image')
+parser.add_argument('path_data', type=str,help='Path to your input data to predict')
 parser.add_argument('name_model', type=str,default ='my_model',help='Name of the model to use')
 parser.add_argument('--n_tiles', nargs="+",type=int, default=(1,4,4),help='Tuple of the number of tiles for every image axis to avoid out of memory problems when the input image is too large. Examples: 1 4 4')
 parser.add_argument('--axes', type=str,default='ZYX',help='Axes to indicate the semantic order of the images axes. Examples : ZYX, CXY ... ')
@@ -48,16 +48,20 @@ def main():
 
 	#Apply CARE network to raw image
 
-	for file_ in sorted(os.listdir(path_data+'to_predict/')):
+	for file_ in sorted(os.listdir(path_data)):
 		print('Reading file: ',file_)
 		start =time.time()
-		x = imread(path_data+'to_predict/'+file_)
+		x = imread(path_data+file_)
 		#n_tiles to avoid *Out of memory* problems during `model.predict` 
 		restored=model.predict(x,axes,n_tiles=n_tiles)
 		end = time.time()
 		print('Prediction time %s sec ' %(end - start))
 		print('Saving file: ',file_)
-		imsave(path_data+'predicted/'+file_, restored)
+		os.chdir(path_data)
+		os.chdir('..')
+		if not os.path.exists('predicted'):
+    			os.makedirs('predicted')
+		imsave(os.getcwd()+'/predicted/'+file_, restored)
 
 
 
