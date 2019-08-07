@@ -29,6 +29,7 @@ from csbdeep.models import Config, CARE
 
 from datagen import data_generation 
 import argparse 
+import gc
 
 parser = argparse.ArgumentParser(description='Data generation and training. The data folder contains 4 folders with tif files of the same name: noisy(input data), clean (ground truth), to_predict and predicted.')
 parser.add_argument('data_path', type=str,help='Path to your input data: noisy (low intensity) and clean(high intensity) folder with .tif files')
@@ -94,6 +95,7 @@ def main():
 
 	# # Export model to be used with CSBDeep **Fiji** plugins and **KNIME** workflows
 	model.export_TF()
+	gc.collect()
 
 if __name__ == '__main__':
 	main()
