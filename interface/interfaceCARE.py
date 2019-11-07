@@ -19,6 +19,7 @@ import napari
 
 sys.path.append('..')
 from training import load,train
+from prediction import predict, plot_results
 
 
 class Ui_Window(object):
@@ -99,12 +100,12 @@ class Ui_Window(object):
         self.verticalLayout.addLayout(self.horizontalLayout_9)
         self.horizontalLayout_14 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_14.setObjectName("horizontalLayout_14")
-        self.label_BatchSize = QtWidgets.QLabel(Window)
-        self.label_BatchSize.setObjectName("label_BatchSize")
-        self.horizontalLayout_14.addWidget(self.label_BatchSize)
-        self.lineEdit_BatchSize = QtWidgets.QLineEdit(Window)
-        self.lineEdit_BatchSize.setObjectName("lineEdit_BatchSize")
-        self.horizontalLayout_14.addWidget(self.lineEdit_BatchSize)
+        self.label_PatchSize = QtWidgets.QLabel(Window)
+        self.label_PatchSize.setObjectName("label_PatchSize")
+        self.horizontalLayout_14.addWidget(self.label_PatchSize)
+        self.lineEdit_PatchSize = QtWidgets.QLineEdit(Window)
+        self.lineEdit_PatchSize.setObjectName("lineEdit_PatchSize")
+        self.horizontalLayout_14.addWidget(self.lineEdit_PatchSize)
         spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_14.addItem(spacerItem3)
         spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
@@ -126,18 +127,6 @@ class Ui_Window(object):
         spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_5.addItem(spacerItem7)
         self.verticalLayout.addLayout(self.horizontalLayout_5)
-        self.horizontalLayout_10 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_10.setObjectName("horizontalLayout_10")
-        self.lineEdit_SaveMod = QtWidgets.QLineEdit(Window)
-        self.lineEdit_SaveMod.setStyleSheet("color: rgb(255, 255, 255);")
-        self.lineEdit_SaveMod.setObjectName("lineEdit_SaveMod")
-        self.horizontalLayout_10.addWidget(self.lineEdit_SaveMod)
-        self.pushButton_SaveMod = QtWidgets.QPushButton(Window)
-        self.pushButton_SaveMod.setObjectName("pushButton_SaveMod")
-        self.horizontalLayout_10.addWidget(self.pushButton_SaveMod)
-        spacerItem8 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_10.addItem(spacerItem8)
-        self.verticalLayout.addLayout(self.horizontalLayout_10)
         self.label_Pred = QtWidgets.QLabel(Window)
         self.label_Pred.setStyleSheet("background-color: rgb(136, 135, 165);")
         self.label_Pred.setFrameShape(QtWidgets.QFrame.StyledPanel)
@@ -257,10 +246,8 @@ class Ui_Window(object):
         self.label_ValSplit.setText(_translate("Window", "Validation split "))
         self.label_TrSteps.setText(_translate("Window", "Training steps"))
         self.label_NbEpochs.setText(_translate("Window", "Nb epochs"))
-        self.label_BatchSize.setText(_translate("Window", "Batch size "))
+        self.label_PatchSize.setText(_translate("Window", "Patch size "))
         self.pushButtonTr.setText(_translate("Window", "TRAIN"))
-        self.lineEdit_SaveMod.setText(_translate("Window", "Enter model name"))
-        self.pushButton_SaveMod.setText(_translate("Window", "Save model"))
         self.label_Pred.setText(_translate("Window", "PREDICTION"))
         self.lineEdit_PredPath.setText(_translate("Window", "Enter prediction data path"))
         self.toolButtonPredPath.setText(_translate("Window", "..."))
@@ -283,12 +270,16 @@ class Ui_Window(object):
 
         #Connect buttons
         self.toolButton_TrPath.clicked.connect(partial(self.browseSlot,self.lineEdit_TrPath))
-        self.pushButtonTr.clicked.connect(self.train)
+        #self.pushButtonTr.clicked.connect(self.train)
         self.pushButton_TrPreview.clicked.connect(partial(self.preview, self.lineEdit_TrPath))
         self.toolButtonPredPath.clicked.connect(partial(self.browseSlot, self.lineEdit_PredPath))
         self.toolButton_PredictedPath.clicked.connect(partial(self.browseSlot, self.lineEdit_PredictedPath))
         self.pushButton_PredPreview.clicked.connect(partial(self.preview, self.lineEdit_PredPath))
         self.pushButton_Pred.clicked.connect(self.predict)
+        self.toolButton_ModPath.clicked.connect(partial(self.browseSlot, self.lineEdit_ModPath))
+        self.pushButtonTr.clicked.connect(self.train_fake)
+        self.pushButton_Pred.clicked.connect(self.predict_fake)
+
 
     def debugPrint( self, msg ):
             '''Print the message in the text edit at the bottom of the
@@ -318,7 +309,6 @@ class Ui_Window(object):
         history = train(X,Y,X_val,Y_val,axes,tr_steps,nb_epochs,model_name='my_model')
         self.lineEdit_ModPath.setText( path_data+model_name )
 
-
     def preview(self,lineEdit):
         path_data = lineEdit.text() + '/clean/'
         im = imread(path_data + [f for f in os.listdir(path_data) if f.endswith('.tif')][0])
@@ -326,11 +316,28 @@ class Ui_Window(object):
         with napari.gui_qt():
             viewer=napari.view_image(imarray)
 
-    def.predict(self):
-        
+    def predict(self):
+        axes='XYZ'
+        path_data = self.lineEdit_PredPath.text()
+        n_tiles = (1,4,4)
+        name_model = 'my_model'
+        x, restored = predict(path_data, name_model, n_tiles, axes)
+        if self.checkBox_ShowRes.isChecked():
+            plot_results(x,restored)
 
+    def train_fake(self):
+        self.completed = 0
 
+        while self.completed < 100:
+            self.completed += 0.00001
+            self.progressBar_Tr.setValue(self.completed)
 
+    def predict_fake(self):
+        self.completed = 0
+
+        while self.completed < 100:
+            self.completed += 0.00001
+            self.progressBar_Pred.setValue(self.completed)
 
 if __name__ == "__main__":
     
