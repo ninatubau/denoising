@@ -39,7 +39,8 @@ parser.add_argument('--train_steps_per_epochs', type=int,default =100,help='Numb
 parser.add_argument('--train_epochs', type=int,default =10,help='Number of epochs')
 parser.add_argument('--model_name', type=str,default ='my_model',help='Name of the model to save')
 
-def main():
+
+def parser_init(parser):
 	
 	args = parser.parse_args()
 	path_data = args.data_path
@@ -49,16 +50,18 @@ def main():
 	train_epochs = args.train_epochs
 	model_name = args.model_name
 
+	return path_data, axes, validation_split, train_steps_per_epochs, train_epochs, model_name
+
+def load(path_data,axes,validation_split):
 	# The TensorFlow backend uses all available GPU memory by default, hence it can be useful to limit it:
 	limit_gpu_memory(fraction=1/2)
-
 	#call datagen to generate the data properly and save to `data/data_prepared.npz``
 	data_generation(path_data,axes)
-
 
 	# Load training data generated via [datagen.py, use 10% as validation data by default
 	(X,Y), (X_val,Y_val), axes = load_training_data('data/data_prepared.npz', validation_split, verbose=True)
 
+	return (X,Y), (X_val,Y_val)
 
 	# # CARE model
 	# 
@@ -68,7 +71,8 @@ def main():
 	# * the number of parameter updates per epoch,
 	# * the loss function, and
 	# * whether the model is probabilistic or not.
-	
+
+def train(X,Y,X_val,Y_val,axes,train_steps_per_epochs,train_epochs,model_name):	
 
 	config = Config(axes, n_channel_in=1, n_channel_out=1, train_steps_per_epoch=train_steps_per_epochs,train_epochs=train_epochs)
 
@@ -84,8 +88,10 @@ def main():
 	# You can start TensorBoard from the current working directory with `tensorboard --logdir=.`
 	# Then connect to [http://localhost:6006/](http://localhost:6006/) with your browser.
 
-
 	history = model.train(X,Y, validation_data=(X_val,Y_val))
+	return history
+
+def save_results(history):
 	plot_history(history,['loss','val_loss'],['mse','val_mse','mae','val_mae'])
 	
 	#save model results in loss.csv file
@@ -98,5 +104,8 @@ def main():
 	gc.collect()
 
 if __name__ == '__main__':
-	main()
+	path_data, axes, validation_split, train_steps_per_epochs, train_epochs, model_name = parser_init(parser)
+	(X,Y), (X_val,Y_val) = load(path_data,axes,validation_split)
+	history = train(X,Y,X_val,Y_val,axes,train_steps_per_epochs,train_epochs,model_name)
+	save_results(history)
 
