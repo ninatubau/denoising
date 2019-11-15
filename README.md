@@ -43,7 +43,7 @@ The dataset has to follow a particular structure as following:
 
 ## Interface
 
-![](interface.gif)
+![](interface.gif){:height="36px" width="36px"}
 
 ```bash
 cd interface
