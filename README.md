@@ -26,6 +26,11 @@ pip install csbdeep
 OR
 since installing TensorFlow with its dependencies (CUDA, cuDNN) can be challenging, there is a ready-to-use [Docker container](https://hub.docker.com/r/tboo/csbdeep_gpu_docker/) as an alternative to get started more quickly. 
 
+- Install napari 
+```bash
+pip install napari 
+```
+
 - Clone this repository
 ```bash
 git clone https://github.com/ninatubau/denoising.git
@@ -35,6 +40,15 @@ git clone https://github.com/ninatubau/denoising.git
 The dataset has to follow a particular structure as following:
 
 <img src="imgs/dataset_structure.png" width="900px" align="center"/>
+
+## Interface
+
+![](interface.gif)
+
+```bash
+cd interface
+python interfaceCARE.py
+```
 
 ## Data preparation and training
 
@@ -95,8 +109,9 @@ python measure.py path/to/data/dataset
 
 ## TO DO
 - [x] Documentation
-- [ ] Link website with results (images and videos)
-- [ ] Clean code
+- [x] Link website with results (images and videos)
+- [x] Clean code
+- [ ] Make interface
 
 ## Acknowledgment
 
