@@ -10,8 +10,9 @@ import sys
 
 
 import numpy as np
+
 import matplotlib
-matplotlib.use('agg')
+matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 #get_ipython().run_line_magic('matplotlib', 'inline')
 #get_ipython().run_line_magic('config', "InlineBackend.figure_format = 'retina'")
@@ -22,6 +23,9 @@ from csbdeep.models import CARE
 from tifffile import imsave
 import time
 import argparse 
+import pathlib
+import tkinter
+
 
 parser = argparse.ArgumentParser(description='Prediction arguments')
 parser.add_argument('path_data', type=str,help='Path to your input data to predict')
@@ -29,7 +33,7 @@ parser.add_argument('name_model', type=str,default ='my_model',help='Name of the
 parser.add_argument('--n_tiles', nargs="+",type=int, default=(1,4,4),help='Tuple of the number of tiles for every image axis to avoid out of memory problems when the input image is too large. Examples: 1 4 4')
 parser.add_argument('--axes', type=str,default='ZYX',help='Axes to indicate the semantic order of the images axes. Examples : ZYX, CXY ... ')
 parser.add_argument('--plot_prediction', type=bool,default =False,help='Plotting images of the prediction : True or False')
-
+parser.add_argument('--filter_data', type=str, default='all', help ='Filter the data that you want to predict: ch0,ch1, all')
 def parser_init(parser):
 	
 	args = parser.parse_args()
@@ -38,36 +42,59 @@ def parser_init(parser):
 	n_tiles=tuple(args.n_tiles)
 	axes = args.axes
 	plot_prediction = args.plot_prediction
+	filter_data = args.filter_data
 
-	return path_data, name_model, n_tiles, axes, plot_prediction
+	return path_data, name_model, n_tiles, axes, plot_prediction,filter_data
 	# # CARE model - our data
 
 	# Load trained model (located in base directory `models` with name `my_model`) from disk.  
 	# The configuration was saved during training and is automatically loaded when `CARE` is initialized with `config=None`.
 
-def predict(path_data, name_model, n_tiles, axes):
-	model = CARE(config=None, name=name_model, basedir='models')
+def callback():
+	follow = True
+	print(follow)
 
+def predict(path_data, name_model, n_tiles, axes, plot_prediction,stack_nb, filter_data):
+
+	model = CARE(config=None, name=name_model, basedir='models')
 	#Apply CARE network to raw image
 
 	for file_ in sorted(os.listdir(path_data)):
-		
-		if file_.endswith('.tif'):
-			print('Reading file: ',file_)
-			start =time.time()
-			x = imread(path_data+'/'+file_)
-			#n_tiles to avoid *Out of memory* problems during `model.predict` 
-			restored=model.predict(x,axes,n_tiles=n_tiles)
-			end = time.time()
-			print('Prediction time %s sec ' %(end - start))
-			print('Saving file: ',file_)
-			os.chdir(path_data)
-			os.chdir('..')
-			if not os.path.exists('predicted'):
-	    			os.makedirs('predicted')
-			imsave(os.getcwd()+'/predicted/'+file_, restored)
 
-	return x, restored
+		if file_.endswith('.tif') and not pathlib.Path(os.path.dirname(os.getcwd())+'/predicted/'+file_).exists() :
+
+			if filter_data in file_ : 
+				reconstruction(model, file_,path_data,axes,n_tiles, plot_prediction)
+
+			elif filter_data=='all':
+				reconstruction(model, file_,path_data,axes,n_tiles, plot_prediction)
+
+			#return x, restored
+
+def reconstruction(model, file, path_data, axes,n_tiles, plot_prediction):
+
+	print('Reading file: ',file)
+	start =time.time()
+	x = imread(path_data+'/'+file)
+	#n_tiles to avoid *Out of memory* problems during `model.predict` 
+	restored=model.predict(x,axes,n_tiles=n_tiles)
+
+	if plot_prediction :
+		print(plot_prediction)
+					#plot_results(x,restored)
+					#window = tkinter.Tk()
+					#window.title("Accurate prediction?")
+					#b = Button(window, text = 'OK', command = callback)
+					#print(b)
+	end = time.time()
+	print('Prediction time %s sec ' %(end - start))
+	print('Saving file: ',file)
+	os.chdir(path_data)
+	os.chdir('..')
+	if not os.path.exists('predicted'):
+		os.makedirs('predicted')
+	imsave(os.getcwd()+'/predicted/'+file, restored)
+
 
 def plot_results(x,restored):
 		plt.figure(figsize=(20,20))
@@ -80,8 +107,8 @@ def plot_results(x,restored):
 		plt.show()
 		    
 if __name__ == '__main__':
-	path_data, name_model, n_tiles, axes, plot_prediction = parser_init(parser)
-	x, restored = predict(path_data, name_model, n_tiles,axes)
-	if plot_prediction:
-		plot_results(x, restored)
+	path_data, name_model, n_tiles, axes, plot_prediction, filter_data = parser_init(parser)
+	predict(path_data, name_model, n_tiles,axes, plot_prediction, stack_nb, filter_data)
+	#if plot_prediction:
+	#	plot_results(x, restored)
 

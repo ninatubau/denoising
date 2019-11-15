@@ -7,12 +7,17 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+
+
+from PyQt5.QtCore import QRunnable, pyqtSlot,QThreadPool
+
 import source_rc
 import sys,os
 import napari
 from tifffile import imread
 import numpy
 from functools import partial
+import time
 
 
 import napari
@@ -20,6 +25,68 @@ import napari
 sys.path.append('..')
 from training import load,train
 from prediction import predict, plot_results
+
+class WorkerTr(QtCore.QRunnable):
+    '''
+    Worker thread
+    '''
+
+    def __init__(self, val_split, tr_steps,nb_epochs,path_data,modelPath):
+        super(WorkerTr,self).__init__()
+
+        self.val_split = val_split
+        self.tr_steps = tr_steps
+        self.nb_epochs = nb_epochs
+        self.path_data = path_data 
+        self.modelPath = modelPath
+
+
+        
+    @QtCore.pyqtSlot()
+    def run(self):
+        '''
+        Your code goes in this function
+        '''
+        print("Thread training started") 
+        axes='XYZ'
+        (X,Y), (X_val,Y_val) = load(self.path_data,axes,self.val_split)
+        history = train(X,Y,X_val,Y_val,axes ,self.tr_steps,self.nb_epochs,model_name='my_model')
+        #self.lineEdit_ModPath.setText( path_data+model_name )
+        self.modelPath.setText( path_data+model_name )
+
+
+        print("Thread training completed")
+
+class WorkerPred(QtCore.QRunnable):
+    '''
+    Worker thread
+    '''
+
+    def __init__(self, path_data, show_res, stack_nb, filter_data):
+        super(WorkerPred,self).__init__()
+
+        self.path_data = path_data 
+        self.show_res = show_res
+        self.stack_nb = stack_nb
+        self.filter_data = filter_data
+
+        
+    @QtCore.pyqtSlot()
+    def run(self):
+        '''
+        Your code goes in this function
+        '''
+        plot = False
+        print("Thread prediction started") 
+        axes='XYZ'
+        n_tiles = (1,4,4)
+        name_model = 'my_model_steps_ep_200'
+        if self.show_res.isChecked():
+            plot = True
+        predict(self.path_data, name_model, n_tiles, axes, plot, self.stack_nb, self.filter_data)
+
+        print("Thread prediction completed")
+
 
 
 class Ui_Window(object):
@@ -52,6 +119,12 @@ class Ui_Window(object):
         self.toolButton_TrPath = QtWidgets.QToolButton(Window)
         self.toolButton_TrPath.setObjectName("toolButton_TrPath")
         self.horizontalLayout_3.addWidget(self.toolButton_TrPath)
+        self.comboBoxTr = QtWidgets.QComboBox(Window)
+        self.comboBoxTr.setMaxVisibleItems(2)
+        self.comboBoxTr.setObjectName("comboBoxTr")
+        self.comboBoxTr.addItem("Clean")
+        self.comboBoxTr.addItem("Noisy")
+        self.horizontalLayout_3.addWidget(self.comboBoxTr)
         self.pushButton_TrPreview = QtWidgets.QPushButton(Window)
         self.pushButton_TrPreview.setObjectName("pushButton_TrPreview")
         self.horizontalLayout_3.addWidget(self.pushButton_TrPreview)
@@ -144,6 +217,17 @@ class Ui_Window(object):
         self.toolButtonPredPath = QtWidgets.QToolButton(Window)
         self.toolButtonPredPath.setObjectName("toolButtonPredPath")
         self.horizontalLayout_2.addWidget(self.toolButtonPredPath)
+        self.comboBoxSelect = QtWidgets.QComboBox(Window)
+        self.comboBoxSelect.setObjectName("comboBoxSelect")
+        self.horizontalLayout_2.addWidget(self.comboBoxSelect)
+        self.comboBoxSelect.addItem("all")
+        self.comboBoxSelect.addItem("ch0")
+        self.comboBoxSelect.addItem("ch1")
+        self.lineEditStack = QtWidgets.QLineEdit(Window)
+        self.lineEditStack.setStyleSheet("color: rgb(255, 255, 255);")
+        self.lineEditStack.setObjectName("lineEditStack")
+        self.horizontalLayout_2.addWidget(self.lineEditStack)
+        self.lineEditStack.setFixedWidth(65)
         self.pushButton_PredPreview = QtWidgets.QPushButton(Window)
         self.pushButton_PredPreview.setObjectName("pushButton_PredPreview")
         self.horizontalLayout_2.addWidget(self.pushButton_PredPreview)
@@ -191,39 +275,14 @@ class Ui_Window(object):
         spacerItem10 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_4.addItem(spacerItem10)
         self.verticalLayout.addLayout(self.horizontalLayout_4)
-        self.label_Eval = QtWidgets.QLabel(Window)
-        self.label_Eval.setStyleSheet("background-color: rgb(136, 135, 165);")
-        self.label_Eval.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.label_Eval.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_Eval.setObjectName("label_Eval")
-        self.verticalLayout.addWidget(self.label_Eval)
         self.horizontalLayout_11 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_11.setObjectName("horizontalLayout_11")
-        self.lineEdit_EvalPath = QtWidgets.QLineEdit(Window)
-        self.lineEdit_EvalPath.setStyleSheet("color: rgb(255, 255, 255);")
-        self.lineEdit_EvalPath.setObjectName("lineEdit_EvalPath")
-        self.horizontalLayout_11.addWidget(self.lineEdit_EvalPath)
-        self.toolButton_EvalPath = QtWidgets.QToolButton(Window)
-        self.toolButton_EvalPath.setObjectName("toolButton_EvalPath")
-        self.horizontalLayout_11.addWidget(self.toolButton_EvalPath)
         self.verticalLayout.addLayout(self.horizontalLayout_11)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.checkBox_2 = QtWidgets.QCheckBox(Window)
-        self.checkBox_2.setObjectName("checkBox_2")
-        self.verticalLayout_2.addWidget(self.checkBox_2)
         self.verticalLayout.addLayout(self.verticalLayout_2)
         self.horizontalLayout_12 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_12.setObjectName("horizontalLayout_12")
-        self.comboBox_EvalMetrics = QtWidgets.QComboBox(Window)
-        self.comboBox_EvalMetrics.setObjectName("comboBox_EvalMetrics")
-        self.comboBox_EvalMetrics.addItem("")
-        self.comboBox_EvalMetrics.addItem("")
-        self.comboBox_EvalMetrics.addItem("")
-        self.horizontalLayout_12.addWidget(self.comboBox_EvalMetrics)
-        self.pushButton_Eval = QtWidgets.QPushButton(Window)
-        self.pushButton_Eval.setObjectName("pushButton_Eval")
-        self.horizontalLayout_12.addWidget(self.pushButton_Eval)
         self.verticalLayout.addLayout(self.horizontalLayout_12)
         self.label_Image = QtWidgets.QLabel(Window)
         self.label_Image.setStyleSheet("image: url(:/newPrefix/wehi_logo.png);")
@@ -232,8 +291,14 @@ class Ui_Window(object):
         self.verticalLayout.addWidget(self.label_Image)
         self.horizontalLayout_6.addLayout(self.verticalLayout)
 
+        
         self.retranslateUi(Window)
+        self.comboBoxTr.setCurrentIndex(-1)
+
         QtCore.QMetaObject.connectSlotsByName(Window)
+
+        self.threadpool = QtCore.QThreadPool()
+        print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
 
     def retranslateUi(self, Window):
         _translate = QtCore.QCoreApplication.translate
@@ -251,6 +316,7 @@ class Ui_Window(object):
         self.label_Pred.setText(_translate("Window", "PREDICTION"))
         self.lineEdit_PredPath.setText(_translate("Window", "Enter prediction data path"))
         self.toolButtonPredPath.setText(_translate("Window", "..."))
+        self.lineEditStack.setText(_translate("Window", "Stack nb"))
         self.pushButton_PredPreview.setText(_translate("Window", "Preview"))
         self.lineEdit_PredictedPath.setText(_translate("Window", "Enter path to save predicted data"))
         self.toolButton_PredictedPath.setText(_translate("Window", "..."))
@@ -259,26 +325,18 @@ class Ui_Window(object):
         self.lineEdit_ModPath.setText(_translate("Window", "Enter model path"))
         self.toolButton_ModPath.setText(_translate("Window", "..."))
         self.pushButton_Pred.setText(_translate("Window", "PREDICT"))
-        self.label_Eval.setText(_translate("Window", "EVALUATION "))
-        self.lineEdit_EvalPath.setText(_translate("Window", "Enter predicted data path"))
-        self.toolButton_EvalPath.setText(_translate("Window", "..."))
-        self.checkBox_2.setText(_translate("Window", "Show graph"))
-        self.comboBox_EvalMetrics.setItemText(0, _translate("Window", "Signal To Noise Ratio"))
-        self.comboBox_EvalMetrics.setItemText(1, _translate("Window", "Structural Similarity Index"))
-        self.comboBox_EvalMetrics.setItemText(2, _translate("Window", "Jaccard Index"))
-        self.pushButton_Eval.setText(_translate("Window", "Evaluate"))
 
         #Connect buttons
         self.toolButton_TrPath.clicked.connect(partial(self.browseSlot,self.lineEdit_TrPath))
-        #self.pushButtonTr.clicked.connect(self.train)
+        self.pushButtonTr.clicked.connect(self.train)
         self.pushButton_TrPreview.clicked.connect(partial(self.preview, self.lineEdit_TrPath))
         self.toolButtonPredPath.clicked.connect(partial(self.browseSlot, self.lineEdit_PredPath))
         self.toolButton_PredictedPath.clicked.connect(partial(self.browseSlot, self.lineEdit_PredictedPath))
         self.pushButton_PredPreview.clicked.connect(partial(self.preview, self.lineEdit_PredPath))
         self.pushButton_Pred.clicked.connect(self.predict)
         self.toolButton_ModPath.clicked.connect(partial(self.browseSlot, self.lineEdit_ModPath))
-        self.pushButtonTr.clicked.connect(self.train_fake)
-        self.pushButton_Pred.clicked.connect(self.predict_fake)
+        #self.pushButtonTr.clicked.connect(self.train_fake)
+        #self.pushButton_Pred.clicked.connect(self.predict_fake)
 
 
     def debugPrint( self, msg ):
@@ -299,45 +357,49 @@ class Ui_Window(object):
                 lineEdit.setText( fileName )
 
     def train(self):
-        val_split = self.doubleSpinBoxTr.value()
-        tr_steps = self.spinBox_TrSteps.value()
-        nb_epochs = self.spinBox_NbEpochs.value()
-        axes = 'XYZ'
-        path_data = self.lineEdit_TrPath.text()
+        workerTr = WorkerTr(self.doubleSpinBoxTr.value(),self.spinBox_TrSteps.value(),self.spinBox_NbEpochs.value(),self.lineEdit_TrPath.text(),self.lineEdit_ModPath)
+        self.threadpool.start(workerTr)
+        # val_split = self.doubleSpinBoxTr.value()
+        # tr_steps = self.spinBox_TrSteps.value()
+        # nb_epochs = self.spinBox_NbEpochs.value()
+        # axes = 'XYZ'
+        # path_data = self.lineEdit_TrPath.text()
 
-        (X,Y), (X_val,Y_val) = load(path_data,axes,val_split)
-        history = train(X,Y,X_val,Y_val,axes,tr_steps,nb_epochs,model_name='my_model')
-        self.lineEdit_ModPath.setText( path_data+model_name )
+        # (X,Y), (X_val,Y_val) = load(path_data,axes,val_split)
+        # history = train(X,Y,X_val,Y_val,axes,tr_steps,nb_epochs,model_name='my_model')
+        # self.lineEdit_ModPath.setText( path_data+model_name )
 
     def preview(self,lineEdit):
-        path_data = lineEdit.text() + '/clean/'
-        im = imread(path_data + [f for f in os.listdir(path_data) if f.endswith('.tif')][0])
-        imarray=numpy.array(im)
+        folder = self.comboBoxTr.currentText()
+        if lineEdit.text().split('/')[-1]=='to_predict':
+            path_data = lineEdit.text() + '/'
+        else:
+            path_data = lineEdit.text() + '/' + folder + '/'
+
+        #im = imread(path_data + [f for f in os.listdir(path_data) if f.endswith('.tif')][0])
+        #imarray=numpy.array(im)
         with napari.gui_qt():
-            viewer=napari.view_image(imarray)
+            viewer = napari.Viewer()
+            for f in os.listdir(path_data): 
+                if f.endswith('.tif'):
+                    im = imread(path_data + f)
+                    imarray=numpy.array(im)
+                    viewer.add_image(imarray,name = f)
+
 
     def predict(self):
-        axes='XYZ'
-        path_data = self.lineEdit_PredPath.text()
-        n_tiles = (1,4,4)
-        name_model = 'my_model'
-        x, restored = predict(path_data, name_model, n_tiles, axes)
-        if self.checkBox_ShowRes.isChecked():
-            plot_results(x,restored)
+        workerPred = WorkerPred(self.lineEdit_PredPath.text(), self.checkBox_ShowRes, self.lineEditStack.text(),self.comboBoxSelect.currentText())
+        self.threadpool.start(workerPred)
+        # axes='XYZ'
+        # path_data = self.lineEdit_PredPath.text()
+        # n_tiles = (1,4,4)
+        # name_model = 'my_model'
+        # x, restored = predict(path_data, name_model, n_tiles, axes)
+        # if self.checkBox_ShowRes.isChecked():
+        #     plot_results(x,restored)
 
-    def train_fake(self):
-        self.completed = 0
 
-        while self.completed < 100:
-            self.completed += 0.00001
-            self.progressBar_Tr.setValue(self.completed)
 
-    def predict_fake(self):
-        self.completed = 0
-
-        while self.completed < 100:
-            self.completed += 0.00001
-            self.progressBar_Pred.setValue(self.completed)
 
 if __name__ == "__main__":
     
