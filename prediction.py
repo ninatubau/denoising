@@ -31,7 +31,7 @@ parser = argparse.ArgumentParser(description='Prediction arguments')
 parser.add_argument('path_data', type=str,help='Path to your input data to predict')
 parser.add_argument('name_model', type=str,default ='my_model',help='Name of the model to use')
 parser.add_argument('--n_tiles', nargs="+",type=int, default=(1,4,4),help='Tuple of the number of tiles for every image axis to avoid out of memory problems when the input image is too large. Examples: 1 4 4')
-parser.add_argument('--axes', type=str,default='ZYX',help='Axes to indicate the semantic order of the images axes. Examples : ZYX, CXY ... ')
+parser.add_argument('--axes', type=str,default='XYZ',help='Axes to indicate the semantic order of the images axes. Examples : ZYX, CXY ... ')
 parser.add_argument('--plot_prediction', type=bool,default =False,help='Plotting images of the prediction : True or False')
 parser.add_argument('--filter_data', type=str, default='all', help ='Filter the data that you want to predict: ch0,ch1, all')
 def parser_init(parser):

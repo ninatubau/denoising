@@ -38,6 +38,7 @@ parser.add_argument('--validation_split', type=int,default =0.1,help='Ratio of v
 parser.add_argument('--train_steps_per_epochs', type=int,default =100,help='Number of training steps per epochs')
 parser.add_argument('--train_epochs', type=int,default =10,help='Number of epochs')
 parser.add_argument('--model_name', type=str,default ='my_model',help='Name of the model to save')
+parser.add_argument('--patch_size', nargs='+', type=int, default =(16,16,64), help='Patch size for data generation, example (16,16,64)')
 
 
 def parser_init(parser):
@@ -49,14 +50,15 @@ def parser_init(parser):
 	train_steps_per_epochs =args.train_steps_per_epochs
 	train_epochs = args.train_epochs
 	model_name = args.model_name
+	patch_size = tuple(args.patch_size)
 
-	return path_data, axes, validation_split, train_steps_per_epochs, train_epochs, model_name
+	return path_data, axes, validation_split, train_steps_per_epochs, train_epochs, model_name, patch_size
 
-def load(path_data,axes,validation_split):
+def load(path_data,axes,validation_split,patch_size):
 	# The TensorFlow backend uses all available GPU memory by default, hence it can be useful to limit it:
 	limit_gpu_memory(fraction=1/2)
 	#call datagen to generate the data properly and save to `data/data_prepared.npz``
-	data_generation(path_data,axes)
+	data_generation(path_data,axes,patch_size)
 
 	# Load training data generated via [datagen.py, use 10% as validation data by default
 	(X,Y), (X_val,Y_val), axes = load_training_data('data/data_prepared.npz', validation_split, verbose=True)
@@ -104,8 +106,8 @@ def save_results(history):
 	gc.collect()
 
 if __name__ == '__main__':
-	path_data, axes, validation_split, train_steps_per_epochs, train_epochs, model_name = parser_init(parser)
-	(X,Y), (X_val,Y_val) = load(path_data,axes,validation_split)
+	path_data, axes, validation_split, train_steps_per_epochs, train_epochs, model_name, patch_size = parser_init(parser)
+	(X,Y), (X_val,Y_val) = load(path_data,axes,validation_split,patch_size)
 	history = train(X,Y,X_val,Y_val,axes,train_steps_per_epochs,train_epochs,model_name)
 	save_results(history)
 

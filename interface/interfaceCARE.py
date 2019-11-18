@@ -31,14 +31,15 @@ class WorkerTr(QtCore.QRunnable):
     Worker thread
     '''
 
-    def __init__(self, val_split, tr_steps,nb_epochs,path_data,modelPath):
+    def __init__(self, val_split, tr_steps,nb_epochs,path_data,model_path,patch_size):
         super(WorkerTr,self).__init__()
 
         self.val_split = val_split
         self.tr_steps = tr_steps
         self.nb_epochs = nb_epochs
         self.path_data = path_data 
-        self.modelPath = modelPath
+        self.model_path = model_path
+        self.patch_size = patch_size
 
 
         
@@ -49,7 +50,7 @@ class WorkerTr(QtCore.QRunnable):
         '''
         print("Thread training started") 
         axes='XYZ'
-        (X,Y), (X_val,Y_val) = load(self.path_data,axes,self.val_split)
+        (X,Y), (X_val,Y_val) = load(self.path_data,axes,self.val_split,self.patch_size)
         history = train(X,Y,X_val,Y_val,axes ,self.tr_steps,self.nb_epochs,model_name='my_model')
         #self.lineEdit_ModPath.setText( path_data+model_name )
         self.modelPath.setText( path_data+model_name )

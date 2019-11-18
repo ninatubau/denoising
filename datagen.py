@@ -37,7 +37,7 @@ from csbdeep.data import RawData, create_patches
 # 
 # Here we have two folders "low" and "GT", where corresponding low and high-SNR stacks are TIFF images with identical filenames.  
 # For this case, we can simply use `RawData.from_folder` and set `axes = 'ZYX'` to indicate the semantic order of the image axes. 
-def data_generation(data_path,axes):
+def data_generation(data_path,axes,patch_size):
 	print('Generating .npz file with the data')
 	#dir_data = './../../../../DATA/data_lattice/stack_2/GPUdecon/'
 	#ax = 'ZYX'
@@ -59,7 +59,7 @@ def data_generation(data_path,axes):
 
 	X, Y, XY_axes = create_patches (
 	    raw_data            = raw_data,
-	    patch_size          = (16,64,64),
+	    patch_size          = patch_size,
 	    n_patches_per_image = 1024,
 	    save_file           = 'data/data_prepared.npz',
 	)
