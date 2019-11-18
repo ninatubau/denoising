@@ -52,7 +52,7 @@ python interfaceCARE.py
 
 ## Command line
 
-# Data preparation and training
+### Data preparation and training
 
 Preparation of the data and training on noise and clean images
 
@@ -76,7 +76,7 @@ Outputs:
 python training.py path/to/dataset --optional_parameter value
 ```
 
-# Prediction
+### Prediction
 
 Prediction of noisy images -> DENOISING
 
@@ -99,7 +99,7 @@ python prediction.py path/to/data/to_predict --optional_parameter value
 ```
 
 
-# Measure
+### Measure
 
 Measurement of the results using Signal to noise ratio, structural similarity index and jaccard index
 
