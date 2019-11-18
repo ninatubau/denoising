@@ -50,7 +50,7 @@ cd interface
 python interfaceCARE.py
 ```
 
-## Command 
+## Terminal 
 
 ### Data preparation and training
 
