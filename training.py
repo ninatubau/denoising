@@ -89,6 +89,7 @@ def train(X,Y,X_val,Y_val,axes,train_steps_per_epochs,train_epochs,model_name):
 	# Then connect to [http://localhost:6006/](http://localhost:6006/) with your browser.
 
 	history = model.train(X,Y, validation_data=(X_val,Y_val))
+	model.export_TF()
 	return history
 
 def save_results(history):
@@ -99,8 +100,7 @@ def save_results(history):
     		for key in history.history.keys():
         		f.write("%s,%s\n"%(key,history.history[key]))
 
-	# # Export model to be used with CSBDeep **Fiji** plugins and **KNIME** workflows
-	model.export_TF()
+	# # Export model to be used with CSBDeep **Fiji** plugins and **KNIME** workflow
 	gc.collect()
 
 if __name__ == '__main__':

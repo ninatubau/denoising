@@ -1,6 +1,6 @@
 # Denoising 3D microscopy images with CSBDeep
 
-This is an application of CSBDeep network for **denoising microscopy images**. It is also possible to load other pre-trained models (.h5 files) to denoise images. Finally, it also gives a method to evaluate denoising through different metrics such as signal-to-noise ratio, structural similarity index and jaccard index.
+This is an application of CSBDeep network for **denoising microscopy images**. It is also possible to load other pre-trained models (.h5 files) to denoise images. this application can be run through the [terminal](#Command line) or through the [interface](#Interface). Finally, it also gives a method to evaluate denoising through different metrics such as signal-to-noise ratio, structural similarity index and jaccard index.
 
 <img src="imgs/noisy.jpg" width="410px" align="left" alt="Before denoising" title="Before denoising"/>
 <img src="imgs/denoised.jpg" width="410px" align="right" alt="After denoising" title="After denoising"/>
@@ -50,17 +50,20 @@ cd interface
 python interfaceCARE.py
 ```
 
-## Data preparation and training
+## Command line
+
+# Data preparation and training
 
 Preparation of the data and training on noise and clean images
 
 Arguments:
 - data_path: Path to your input data: noisy (low intensity) and clean(high intensity) folder with .tif files
-- *axes: Axes to indicate the semantic order of the images. Examples : ZYX, CXY ...* 
-- *validation_split: Ratio of validation data for training*
-- *train_steps_per_epochs: Number of training steps per epochs*
-- *train_epochs: Number of epochs*
-- *model_name: Name of the model saved in the models folder*
+- *axes: Axes to indicate the semantic order of the images. Examples : ZYX, CXY ..., default XYZ* 
+- *validation_split: Ratio of validation data for training, default 0.1*
+- *train_steps_per_epochs: Number of training steps per epochs, default 100*
+- *train_epochs: Number of epochs, default 10*
+- *model_name: Name of the model saved in the models folder, default my_model*
+- *patch_size: Size of patches to train the model, default (16,16,64)*
 
 *optional arguments*
 
@@ -73,15 +76,18 @@ Outputs:
 python training.py path/to/dataset --optional_parameter value
 ```
 
-## Prediction
+# Prediction
 
 Prediction of noisy images -> DENOISING
 
 Arguments:
-- path_indata: Path to to_predict folder data
-- name_model: Name of the .h5 file to use as trained model
-- *axes: axes to indicate the semantic order of the images. Examples : ZYX, CXY ...*
-- *plot_prediction: True or False to plot some images after the prediction*
+- path_data: Path to to_predict folder data
+- name_model: Name of the model to use as trained model 
+- *n_tiles: Number of tiles for evey image axes to avoid out of memory issues, default (1,4,4)*
+- *axes: Axes to indicate the semantic order of the images. Examples : ZYX, CXY ..., default XYZ*
+- *plot_prediction: Boolean value to plot some images after the prediction, default False*
+- *filter_data: Filter dat the you want to predict. Examples: all, ch0, ch1, default all*
+
 
 *optional arguments*
 
@@ -93,7 +99,7 @@ python prediction.py path/to/data/to_predict --optional_parameter value
 ```
 
 
-## Measure
+# Measure
 
 Measurement of the results using Signal to noise ratio, structural similarity index and jaccard index
 
@@ -111,7 +117,7 @@ python measure.py path/to/data/dataset
 - [x] Documentation
 - [x] Link website with results (images and videos)
 - [x] Clean code
-- [ ] Make interface
+- [x] Make interface
 
 ## Acknowledgment
 
