@@ -1,6 +1,6 @@
 # Denoising 3D microscopy images with CSBDeep
 
-This is an application of CSBDeep network for **denoising microscopy images**. It is also possible to load other pre-trained models (.h5 files) to denoise images. this application can be run through the [terminal](#Command line) or through the [interface](#Interface). Finally, it also gives a method to evaluate denoising through different metrics such as signal-to-noise ratio, structural similarity index and jaccard index.
+This is an application of CSBDeep network for **denoising microscopy images**. It is also possible to load other pre-trained models (.h5 files) to denoise images. this application can be run through the [terminal](#Command) or through the [interface](#Interface). Finally, it also gives a method to evaluate denoising through different metrics such as signal-to-noise ratio, structural similarity index and jaccard index.
 
 <img src="imgs/noisy.jpg" width="410px" align="left" alt="Before denoising" title="Before denoising"/>
 <img src="imgs/denoised.jpg" width="410px" align="right" alt="After denoising" title="After denoising"/>
@@ -50,7 +50,7 @@ cd interface
 python interfaceCARE.py
 ```
 
-## Command line
+## Command 
 
 ### Data preparation and training
 
