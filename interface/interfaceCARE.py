@@ -33,7 +33,7 @@ class WorkerTr(QtCore.QRunnable):
 
     def __init__(self, val_split, tr_steps,nb_epochs,path_data,model_path,patch_size):
         super(WorkerTr,self).__init__()
-
+        
         self.val_split = val_split
         self.tr_steps = tr_steps
         self.nb_epochs = nb_epochs
@@ -125,6 +125,7 @@ class Ui_Window(object):
         self.comboBoxTr.setObjectName("comboBoxTr")
         self.comboBoxTr.addItem("clean")
         self.comboBoxTr.addItem("noisy")
+        self.comboBoxTr.addItem("both")
         self.horizontalLayout_3.addWidget(self.comboBoxTr)
         self.pushButton_TrPreview = QtWidgets.QPushButton(Window)
         self.pushButton_TrPreview.setObjectName("pushButton_TrPreview")
@@ -377,22 +378,33 @@ class Ui_Window(object):
         # history = train(X,Y,X_val,Y_val,axes,tr_steps,nb_epochs,model_name='my_model')
         # self.lineEdit_ModPath.setText( path_data+model_name )
 
+    def view_images(self,path_data):
+        with napari.gui_qt():
+            viewer = napari.Viewer()
+            for f in os.listdir(path_data)[:5]: 
+                if f.endswith('.tif'):
+                    im = imread(path_data + f)
+                    imarray=numpy.array(im)
+                    viewer.add_image(imarray,name = f+path_data.split()[-1])
+
     def preview(self,lineEdit):
         folder = self.comboBoxTr.currentText()
         if lineEdit.text().split('/')[-1]=='to_predict':
             path_data = lineEdit.text() + '/'
+            self.view_images(path_data)
+        elif folder == 'both':
+            path_data = lineEdit.text() + '/clean/'
+            self.view_images(path_data)
+            path_data = lineEdit.text() + '/noisy/'
+            self.view_images(path_data)
+
         else:
             path_data = lineEdit.text() + '/' + folder + '/'
+            self.view_images(path_data)
 
         #im = imread(path_data + [f for f in os.listdir(path_data) if f.endswith('.tif')][0])
         #imarray=numpy.array(im)
-        with napari.gui_qt():
-            viewer = napari.Viewer()
-            for f in os.listdir(path_data): 
-                if f.endswith('.tif'):
-                    im = imread(path_data + f)
-                    imarray=numpy.array(im)
-                    viewer.add_image(imarray,name = f)
+        
 
 
     def predict(self):

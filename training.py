@@ -62,6 +62,7 @@ def load(path_data,axes,validation_split,patch_size):
 
 	# Load training data generated via [datagen.py, use 10% as validation data by default
 	(X,Y), (X_val,Y_val), axes = load_training_data('data/data_prepared.npz', validation_split, verbose=True)
+	print(X.shape, Y.shape, '----------')
 
 	return (X,Y), (X_val,Y_val)
 
@@ -75,7 +76,7 @@ def load(path_data,axes,validation_split,patch_size):
 	# * whether the model is probabilistic or not.
 
 def train(X,Y,X_val,Y_val,axes,train_steps_per_epochs,train_epochs,model_name):	
-
+	print(train_steps_per_epochs,train_epochs,'**************************************')
 	config = Config(axes, n_channel_in=1, n_channel_out=1, train_steps_per_epoch=train_steps_per_epochs,train_epochs=train_epochs)
 
 	# We now create a CARE model with the chosen configuration:
