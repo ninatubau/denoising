@@ -34,6 +34,9 @@ parser.add_argument('--n_tiles', nargs="+",type=int, default=(1,4,4),help='Tuple
 parser.add_argument('--axes', type=str,default='XYZ',help='Axes to indicate the semantic order of the images axes. Examples : ZYX, CXY ... ')
 parser.add_argument('--plot_prediction', type=bool,default =False,help='Plotting images of the prediction : True or False')
 parser.add_argument('--filter_data', type=str, default='all', help ='Filter the data that you want to predict: ch0,ch1, all')
+parser.add_argument('--stack_nb', type=int, default=10, help ='Filter the number of images taken as input')
+
+
 def parser_init(parser):
 	
 	args = parser.parse_args()
@@ -43,8 +46,9 @@ def parser_init(parser):
 	axes = args.axes
 	plot_prediction = args.plot_prediction
 	filter_data = args.filter_data
+	stack_nb = args.stack_nb
 
-	return path_data, name_model, n_tiles, axes, plot_prediction,filter_data
+	return path_data, name_model, n_tiles, axes, plot_prediction, filter_data, stack_nb
 	# # CARE model - our data
 
 	# Load trained model (located in base directory `models` with name `my_model`) from disk.  
@@ -109,7 +113,7 @@ def plot_results(x,restored):
 		plt.show()
 		    
 if __name__ == '__main__':
-	path_data, name_model, n_tiles, axes, plot_prediction, filter_data = parser_init(parser)
+	path_data, name_model, n_tiles, axes, plot_prediction, filter_data, stack_nb = parser_init(parser)
 	predict(path_data, name_model, n_tiles,axes, plot_prediction, stack_nb, filter_data)
 	#if plot_prediction:
 	#	plot_results(x, restored)
