@@ -60,13 +60,15 @@ def predict(path_data, name_model, n_tiles, axes, plot_prediction,stack_nb, filt
 	#Apply CARE network to raw image
 
 	for file_ in sorted(os.listdir(path_data)):
-
+		print('Processing....', file_)
 		if file_.endswith('.tif') and not pathlib.Path(os.path.dirname(os.getcwd())+'/predicted/'+file_).exists() :
-
+			print('File end with .tif and doesn t exist')
 			if filter_data in file_ : 
 				reconstruction(model, file_,path_data,axes,n_tiles, plot_prediction)
+				print('filter_data')
 
-			elif filter_data=='all':
+			if filter_data=='all':
+				print('reconstruction')
 				reconstruction(model, file_,path_data,axes,n_tiles, plot_prediction)
 
 			#return x, restored

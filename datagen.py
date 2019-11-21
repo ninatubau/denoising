@@ -74,10 +74,10 @@ def data_generation(data_path,axes,patch_size):
 
 	# This shows the maximum projection of some of the generated patch pairs (even rows: *source*, odd rows: *target*)
 
-	for i in range(2):
-	    plt.figure(figsize=(16,4))
-	    sl = slice(8*i, 8*(i+1)), 0
-	    plot_some(X[sl],Y[sl],title_list=[np.arange(sl[0].start,sl[0].stop)])
-	    plt.show()
-	None;
+	# for i in range(2):
+	#     plt.figure(figsize=(16,4))
+	#     sl = slice(8*i, 8*(i+1)), 0
+	#     plot_some(X[sl],Y[sl],title_list=[np.arange(sl[0].start,sl[0].stop)])
+	#     plt.show()
+	# None;
 

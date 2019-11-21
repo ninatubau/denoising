@@ -9,7 +9,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-from PyQt5.QtCore import QRunnable, pyqtSlot,QThreadPool
+from PyQt5.QtCore import QRunnable, pyqtSlot,QThreadPool,QThread
 
 import source_rc
 import sys,os
@@ -26,7 +26,7 @@ sys.path.append('..')
 from training import load,train
 from prediction import predict, plot_results
 
-class WorkerTr(QtCore.QRunnable):
+class WorkerTr(QThread):
     '''
     Worker thread
     '''
@@ -43,22 +43,24 @@ class WorkerTr(QtCore.QRunnable):
 
 
         
-    @QtCore.pyqtSlot()
+    #@QtCore.pyqtSlot()
     def run(self):
         '''
         Your code goes in this function
         '''
         print("Thread training started") 
         axes='XYZ'
+        model_name='my_model'
         (X,Y), (X_val,Y_val) = load(self.path_data,axes,self.val_split,self.patch_size)
-        history = train(X,Y,X_val,Y_val,axes ,self.tr_steps,self.nb_epochs,model_name='my_model')
+        history = train(X,Y,X_val,Y_val,axes ,self.tr_steps,self.nb_epochs,model_name)
         #self.lineEdit_ModPath.setText( path_data+model_name )
-        self.modelPath.setText( path_data+model_name )
-
+        model_path=os.getcwd()
+        self.model_path.setText( model_path+'/'+model_name )
+        #self.emit(SIGNAL("threadDone()"))
 
         print("Thread training completed")
 
-class WorkerPred(QtCore.QRunnable):
+class WorkerPred(QThread):
     '''
     Worker thread
     '''
@@ -72,7 +74,7 @@ class WorkerPred(QtCore.QRunnable):
         self.filter_data = filter_data
 
         
-    @QtCore.pyqtSlot()
+    #@QtCore.pyqtSlot()
     def run(self):
         '''
         Your code goes in this function
@@ -305,8 +307,8 @@ class Ui_Window(object):
 
         QtCore.QMetaObject.connectSlotsByName(Window)
 
-        self.threadpool = QtCore.QThreadPool()
-        print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
+        #self.threadpool = QtCore.QThreadPool()
+        #print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
 
     def retranslateUi(self, Window):
         _translate = QtCore.QCoreApplication.translate
@@ -336,6 +338,7 @@ class Ui_Window(object):
 
         #Connect buttons
         self.toolButton_TrPath.clicked.connect(partial(self.browseSlot,self.lineEdit_TrPath))
+        #self.workerTr = WorkerTr(self.doubleSpinBoxTr.value(),self.spinBox_TrSteps.value(),self.spinBox_NbEpochs.value(),self.lineEdit_TrPath.text(),self.lineEdit_ModPath,(self.spinBox_x.value(),self.spinBox_y.value(),self.spinBox_z.value()))
         self.pushButtonTr.clicked.connect(self.train)
         self.pushButton_TrPreview.clicked.connect(partial(self.preview, self.lineEdit_TrPath))
         self.toolButtonPredPath.clicked.connect(partial(self.browseSlot, self.lineEdit_PredPath))
@@ -366,8 +369,10 @@ class Ui_Window(object):
 
     def train(self):
         patch_size = (self.spinBox_x.value(),self.spinBox_y.value(),self.spinBox_z.value())
-        workerTr = WorkerTr(self.doubleSpinBoxTr.value(),self.spinBox_TrSteps.value(),self.spinBox_NbEpochs.value(),self.lineEdit_TrPath.text(),self.lineEdit_ModPath,patch_size)
-        self.threadpool.start(workerTr)
+
+        self.workerTr = WorkerTr(self.doubleSpinBoxTr.value(),self.spinBox_TrSteps.value(),self.spinBox_NbEpochs.value(),self.lineEdit_TrPath.text(),self.lineEdit_ModPath,patch_size)
+        #self.threadpool.start(workerTr)
+        self.workerTr.start()
         # val_split = self.doubleSpinBoxTr.value()
         # tr_steps = self.spinBox_TrSteps.value()
         # nb_epochs = self.spinBox_NbEpochs.value()
@@ -408,8 +413,9 @@ class Ui_Window(object):
 
 
     def predict(self):
-        workerPred = WorkerPred(self.lineEdit_PredPath.text(), self.checkBox_ShowRes, self.lineEditStack.text(),self.comboBoxSelect.currentText())
-        self.threadpool.start(workerPred)
+        self.workerPred = WorkerPred(self.lineEdit_PredPath.text(), self.checkBox_ShowRes, self.lineEditStack.text(),self.comboBoxSelect.currentText())
+        self.workerPred.start()
+        #self.threadpool.start(workerPred)
         # axes='XYZ'
         # path_data = self.lineEdit_PredPath.text()
         # n_tiles = (1,4,4)
@@ -418,7 +424,8 @@ class Ui_Window(object):
         # if self.checkBox_ShowRes.isChecked():
         #     plot_results(x,restored)
 
-
+    #def threadDone(self):
+    	#print('Main thread, training thread is done')
 
 
 if __name__ == "__main__":

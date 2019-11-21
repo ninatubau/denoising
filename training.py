@@ -58,7 +58,8 @@ def load(path_data,axes,validation_split,patch_size):
 	# The TensorFlow backend uses all available GPU memory by default, hence it can be useful to limit it:
 	limit_gpu_memory(fraction=1/2)
 	#call datagen to generate the data properly and save to `data/data_prepared.npz``
-	data_generation(path_data,axes,patch_size)
+	print(path_data,axes,patch_size)
+	#data_generation(path_data,axes,patch_size)
 
 	# Load training data generated via [datagen.py, use 10% as validation data by default
 	(X,Y), (X_val,Y_val), axes = load_training_data('data/data_prepared.npz', validation_split, verbose=True)
