@@ -38,7 +38,7 @@ The dataset has to follow a particular structure as following:
 
 ## Interface
 
-![Interface](interface.gif)
+![Interface](imgs/interface.gif)
 
 ```bash
 cd interface
