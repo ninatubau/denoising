@@ -1,6 +1,6 @@
 # Denoising 3D microscopy images with CSBDeep
 
-This is an application of CSBDeep network for **denoising microscopy images**. It is also possible to load other pre-trained models (.h5 files) to denoise images. this application can be run through the [terminal](#Command line) or through the [interface](#Interface). Finally, it also gives a method to evaluate denoising through different metrics such as signal-to-noise ratio, structural similarity index and jaccard index.
+This is an application of CSBDeep network for **denoising microscopy images**. It is also possible to load other pre-trained models (.h5 files) to denoise images. this application can be run through the [terminal](#Command) or through the [interface](#Interface). Finally, it also gives a method to evaluate denoising through different metrics such as signal-to-noise ratio, structural similarity index and jaccard index.
 
 <img src="imgs/noisy.jpg" width="410px" align="left" alt="Before denoising" title="Before denoising"/>
 <img src="imgs/denoised.jpg" width="410px" align="right" alt="After denoising" title="After denoising"/>
@@ -13,15 +13,15 @@ This is an application of CSBDeep network for **denoising microscopy images**. I
 - Linux or OSX
 
 ### Getting started
-- Install python https://realpython.com/installing-python/
-- Install tensorflow https://www.tensorflow.org/install/
+- Install [python](https://realpython.com/installing-python/)
+- Install [tensorflow](https://www.tensorflow.org/install/)
 ```bash
 # Current stable release for CPU-only
 pip install tensorflow 
 ```
-- Install CSBDeep package http://csbdeep.bioimagecomputing.com/doc/install.html
+- Install package (numpy, [csbdeep](http://csbdeep.bioimagecomputing.com/doc/install.html) etc.) 
 ```bash
-pip install csbdeep 
+pip install -r requirements.txt 
 ```
 OR
 since installing TensorFlow with its dependencies (CUDA, cuDNN) can be challenging, there is a ready-to-use [Docker container](https://hub.docker.com/r/tboo/csbdeep_gpu_docker/) as an alternative to get started more quickly. 
@@ -43,16 +43,16 @@ The dataset has to follow a particular structure as following:
 
 ## Interface
 
-![](interface.gif)
+![Interface](interface.gif)
 
 ```bash
 cd interface
 python interfaceCARE.py
 ```
 
-## Command line
+## Terminal 
 
-# Data preparation and training
+### Data preparation and training
 
 Preparation of the data and training on noise and clean images
 
@@ -76,7 +76,7 @@ Outputs:
 python training.py path/to/dataset --optional_parameter value
 ```
 
-# Prediction
+### Prediction
 
 Prediction of noisy images -> DENOISING
 
@@ -99,7 +99,7 @@ python prediction.py path/to/data/to_predict --optional_parameter value
 ```
 
 
-# Measure
+### Measure
 
 Measurement of the results using Signal to noise ratio, structural similarity index and jaccard index
 
@@ -118,6 +118,7 @@ python measure.py path/to/data/dataset
 - [x] Link website with results (images and videos)
 - [x] Clean code
 - [x] Make interface
+
 
 ## Acknowledgment
 

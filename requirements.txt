@@ -1,0 +1,8 @@
+pip==20.0.2
+csbdeep==0.4.1
+numpy==1.18.1
+scikit-image==0.13.1
+tifffile==2019.7.26.2
+argparse==1.4.0
+
+
