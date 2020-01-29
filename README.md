@@ -19,17 +19,12 @@ This is an application of CSBDeep network for **denoising microscopy images**. I
 # Current stable release for CPU-only
 pip install tensorflow 
 ```
-- Install package (numpy, [csbdeep](http://csbdeep.bioimagecomputing.com/doc/install.html) etc.) 
+- Install package (numpy, napari, [csbdeep](http://csbdeep.bioimagecomputing.com/doc/install.html) etc.) 
 ```bash
 pip install -r requirements.txt 
 ```
 OR
 since installing TensorFlow with its dependencies (CUDA, cuDNN) can be challenging, there is a ready-to-use [Docker container](https://hub.docker.com/r/tboo/csbdeep_gpu_docker/) as an alternative to get started more quickly. 
-
-- Install napari 
-```bash
-pip install napari 
-```
 
 - Clone this repository
 ```bash
