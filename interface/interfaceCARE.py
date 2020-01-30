@@ -22,7 +22,7 @@ import time
 
 import napari
 
-sys.path.append('..')
+sys.path.append('../src/')
 from training import load,train
 from prediction import predict, plot_results
 
@@ -51,8 +51,9 @@ class WorkerTr(QThread):
         print("Thread training started") 
         axes='XYZ'
         model_name='my_model'
-        (X,Y), (X_val,Y_val) = load(self.path_data,axes,self.val_split,self.patch_size)
-        history = train(X,Y,X_val,Y_val,axes ,self.tr_steps,self.nb_epochs,model_name)
+        data_name='data_prepared'
+        (X,Y), (X_val,Y_val) = load(self.path_data,axes,self.val_split,self.patch_size,data_name)
+        history = train(X,Y,X_val,Y_val,axes ,self.tr_steps,self.nb_epochs,self.model_name)
         #self.lineEdit_ModPath.setText( path_data+model_name )
         model_path=os.getcwd()
         self.model_path.setText( model_path+'/'+model_name )
