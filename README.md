@@ -6,12 +6,7 @@ This is an application of CSBDeep network for **denoising microscopy images**. I
 <img src="imgs/clean.gif" width="410px" align="left" alt="After denoising" title="Before denoising"/>
 <img src="imgs/noisy.gif" width="410px" align="right" alt="After denoising" title="After denoising"/>   
     
-
-
-
-
-
-</br> </br> </br> </br> </br> </br> </br> </br> </br> </br> </br> </br> </br> </br> 
+</br> </br> </br> </br> </br> </br> </br> </br> </br> </br> </br> </br> </br> </br> </br> </br> </br> </br> </br> 
 
 
 ## Setup
