@@ -2,7 +2,8 @@
 
 This is an application of CSBDeep network for **denoising microscopy images**. It is also possible to load other pre-trained models (.h5 files) to denoise images. this application can be run through the [terminal](#Command) or through the [interface](#Interface). Finally, it also gives a method to evaluate denoising through different metrics such as signal-to-noise ratio, structural similarity index and jaccard index.
 
-<img src="imgs/clean.gif" width="410px" align="left" alt="Before denoising" title="Before denoising"/>
+
+<img src="imgs/clean.gif">
 <img src="imgs/noisy.gif" width="410px" align="right" alt="After denoising" title="After denoising"/>
 
 
@@ -14,12 +15,8 @@ This is an application of CSBDeep network for **denoising microscopy images**. I
 
 ### Getting started
 - Install [python](https://realpython.com/installing-python/)
-- Install [tensorflow](https://www.tensorflow.org/install/)
-```bash
-# Current stable release for CPU-only
-pip install tensorflow 
-```
-- Install package (numpy, napari, [csbdeep](http://csbdeep.bioimagecomputing.com/doc/install.html) etc.) 
+
+- Install package (numpy, napari, tensorflow, [csbdeep](http://csbdeep.bioimagecomputing.com/doc/install.html) etc.) 
 ```bash
 pip install -r requirements.txt 
 ```
