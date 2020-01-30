@@ -36,12 +36,13 @@ The dataset has to follow a particular structure as following:
 
 ## Interface
 
-<img src="imgs/interface.gif" width="410px" align="right" alt="Interface" title="Interface"/>
+<img src="imgs/interface.gif" width="550px" align="right" alt="Interface" title="Interface"/>
 
 ```bash
 cd interface
 python interfaceCARE.py
 ```
+</br> </br> </br> </br> </br> </br> </br> </br> 
 
 ## Terminal 
 
