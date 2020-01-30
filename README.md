@@ -2,7 +2,8 @@
 
 This is an application of CSBDeep network for **denoising microscopy images**. It is also possible to load other pre-trained models (.h5 files) to denoise images. this application can be run through the [terminal](#Command) or through the [interface](#Interface). Finally, it also gives a method to evaluate denoising through different metrics such as signal-to-noise ratio, structural similarity index and jaccard index.
 
-
+![Clean](imgs/clean.gif)
+![Noisy](imgs/noisy.gif)
 <img src="imgs/clean.gif">
 <img src="imgs/noisy.gif" width="410px" align="right" alt="After denoising" title="After denoising"/>
 
