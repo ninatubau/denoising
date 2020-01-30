@@ -4,8 +4,8 @@ This is an application of CSBDeep network for **denoising microscopy images**. I
 
 
 <img src="imgs/clean.gif" width="410px" align="right" alt="After denoising" title="Before denoising"/>
-<img src="imgs/noisy.gif" width="410px" align="right" alt="After denoising" title="After denoising"/>
-
+<img src="imgs/noisy.gif" width="410px" align="right" alt="After denoising" title="After denoising"/>   
+   
 
 
 ## Setup
@@ -35,7 +35,7 @@ The dataset has to follow a particular structure as following:
 
 ## Interface
 
-![Interface](imgs/interface.gif)
+<img src="imgs/interface.gif" width="410px" align="right" alt="Interface" title="Interface"/>
 
 ```bash
 cd interface
