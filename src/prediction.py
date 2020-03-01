@@ -119,12 +119,12 @@ def reconstruction(model, file_name, path_data, axes,n_tiles, plot_prediction):
 	start =time.time()
 	x = imread(path_data+'/'+file_name)
 	#n_tiles to avoid *Out of memory* problems during `model.predict`
-
-	#res=[]
-	#for i in range(x.shape[0]): 
-	restored=model.predict(x,axes,n_tiles=n_tiles)
-	#	res.append(restored)
-	#restored = np.stack(res,axis=0)
+	print(x.shape)
+	res=[]
+	for i in range(x.shape[0]): 
+		restored=model.predict(x[i,:,:,:],axes,n_tiles=n_tiles)
+		res.append(restored)
+	restored = np.stack(res,axis=0)
 			
 	end = time.time()
 	print('Prediction time %s sec ' %(end - start))
