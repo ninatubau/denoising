@@ -158,30 +158,30 @@ def train(X, Y, X_val, Y_val, axes, model_name, csv_file,probabilistic, validati
     # Then connect to [http://localhost:6006/](http://localhost:6006/) with your browser.
 
     history = model.train(X, Y, validation_data=(X_val, Y_val))
-    df = pd.DataFrame()
-    df['probabilistic'] = [config.probabilistic]
-    df['batch_size'] = config.train_batch_size
-    df['train_epochs'] = config.train_epochs
-    df['lr'] = config.train_learning_rate
-    df['train_steps_per_epoch'] = config.train_steps_per_epoch
-    df['unet_last_activation'] = config.unet_last_activation
-    df['unet_n_depth'] = config.unet_n_depth
-    df['unet_n_first'] = config.unet_n_first
-    df['unet_residual'] = config.unet_residual
-    df['patch_size'] = str(patch_size)
-    df['validation_split'] = validation_split
-    last_value = len(history.history['loss']) - 1
-    #dict = kwargs
-    #data = dict.update({'loss':history.history['loss'][last_value], })
-    df['val_loss'] = history.history['val_loss'][last_value]
-    df['loss'] = history.history['loss'][last_value]
-    df['mse']=history.history['mse'][last_value]
-    df['mae']=history.history['mae'][last_value]
-    df['val_mse']=history.history['val_mse'][last_value]
-    df['val_mae']=history.history['val_mae'][last_value]
-    #df = pd.DataFrame.from_dict(data)
-    #print('File saved in:', os.getcwd()+'/'+csv_file)
-    df.to_csv('/data/'+csv_file)
+    # df = pd.DataFrame()
+    # df['probabilistic'] = [config.probabilistic]
+    # df['batch_size'] = config.train_batch_size
+    # df['train_epochs'] = config.train_epochs
+    # df['lr'] = config.train_learning_rate
+    # df['train_steps_per_epoch'] = config.train_steps_per_epoch
+    # df['unet_last_activation'] = config.unet_last_activation
+    # df['unet_n_depth'] = config.unet_n_depth
+    # df['unet_n_first'] = config.unet_n_first
+    # df['unet_residual'] = config.unet_residual
+    # df['patch_size'] = str(patch_size)
+    # df['validation_split'] = validation_split
+    # last_value = len(history.history['loss']) - 1
+    # #dict = kwargs
+    # #data = dict.update({'loss':history.history['loss'][last_value], })
+    # df['val_loss'] = history.history['val_loss'][last_value]
+    # df['loss'] = history.history['loss'][last_value]
+    # df['mse']=history.history['mse'][last_value]
+    # df['mae']=history.history['mae'][last_value]
+    # df['val_mse']=history.history['val_mse'][last_value]
+    # df['val_mae']=history.history['val_mae'][last_value]
+    # #df = pd.DataFrame.from_dict(data)
+    # #print('File saved in:', os.getcwd()+'/'+csv_file)
+    # df.to_csv('/data/'+csv_file)
     model.export_TF()
     return history
 

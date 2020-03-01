@@ -16,7 +16,6 @@ from tifffile import imread
 from functools import partial
 import sys
 sys.path.append('../../')
-#sys.path.append('/data/data_drive/')
 from denoising.src.training import load, train
 from denoising.src.prediction import predict
 
@@ -44,9 +43,11 @@ class WorkerTr(QThread):
         print("Thread training started")
         axes = 'XYZ'
         model_name = 'my_model'
+        csv_file = 'loss.csv'
+        kwargs = {'train_steps_per_epoch': self.tr_steps, 'train_epochs': self.nb_epochs}
         data_name = 'data_prepared'
         (X, Y), (X_val, Y_val) = load(self.path_data, axes, self.val_split, self.patch_size, data_name)
-        train(X, Y, X_val, Y_val, axes, self.tr_steps, self.nb_epochs, model_name)
+        train(X, Y, X_val, Y_val, axes, model_name, csv_file, True , self.val_split, self.patch_size,**kwargs)
         # self.lineEdit_ModPath.setText( path_data+model_name )
         model_path = os.path.abspath(os.path.join(os.getcwd(), '..'))
         print(model_path)
