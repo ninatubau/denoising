@@ -41,7 +41,7 @@ parser.add_argument('--train_steps_per_epoch', type=int, default=1, help='Number
 parser.add_argument('--train_epochs', type=int, default=1, help='Number of epochs')
 parser.add_argument('--model_name', type=str, default='my_model', help='Name of the model to save')
 parser.add_argument('--patch_size', nargs='+', type=int, default=(16, 64, 64),
-                    help='Patch size for data generation, example (16,16,64)')
+                    help='Patch size for data generation, example (16,64,64)')
 parser.add_argument('--probabilistic', type=bool, default=False, help='Parameter of the NN')
 parser.add_argument('--train_batch_size', type=int, default=16, help='Parameter of the NN')
 parser.add_argument('--train_learning_rate', type=float, default=0.0004, help='Parameter of the NN')

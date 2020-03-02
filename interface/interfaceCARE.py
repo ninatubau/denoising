@@ -114,6 +114,7 @@ class UiWindow(object):
         self.spinBox_z = QtWidgets.QSpinBox(Window)
         self.spinBox_y = QtWidgets.QSpinBox(Window)
         self.spinBox_x = QtWidgets.QSpinBox(Window)
+
         self.label_PatchSize = QtWidgets.QLabel(Window)
         self.horizontalLayout_14 = QtWidgets.QHBoxLayout()
         self.spinBox_NbEpochs = QtWidgets.QSpinBox(Window)
@@ -134,6 +135,15 @@ class UiWindow(object):
         self.label_Tr = QtWidgets.QLabel(Window)
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.horizontalLayout_6 = QtWidgets.QHBoxLayout(Window)
+
+        #Initialise with training default values
+        self.spinBox_x.setValue(16)
+        self.spinBox_y.setValue(64)
+        self.spinBox_z.setValue(64)
+        self.doubleSpinBoxTr.setValue(0.2)
+        self.spinBox_TrSteps.setValue(100)
+        self.spinBox_NbEpochs.setValue(100)
+
 
     def setup_ui(self, window):
         window.setObjectName("Window")
@@ -182,7 +192,7 @@ class UiWindow(object):
         self.horizontalLayout_8.setObjectName("horizontalLayout_8")
         self.label_TrSteps.setObjectName("label_TrSteps")
         self.horizontalLayout_8.addWidget(self.label_TrSteps)
-        self.spinBox_TrSteps.setMinimum(1)
+        self.spinBox_TrSteps.setMinimum(0)
         self.spinBox_TrSteps.setMaximum(100000)
         self.spinBox_TrSteps.setSingleStep(100)
         self.spinBox_TrSteps.setObjectName("spinBox_TrSteps")
@@ -193,6 +203,7 @@ class UiWindow(object):
         self.horizontalLayout_9.setObjectName("horizontalLayout_9")
         self.label_NbEpochs.setObjectName("label_NbEpochs")
         self.horizontalLayout_9.addWidget(self.label_NbEpochs)
+        self.spinBox_NbEpochs.setMinimum(0)
         self.spinBox_NbEpochs.setMaximum(1000)
         self.spinBox_NbEpochs.setObjectName("spinBox_NbEpochs")
         self.horizontalLayout_9.addWidget(self.spinBox_NbEpochs)
