@@ -1,11 +1,11 @@
-pandas==1.0.1
+pandas==1.0.0
 pip==20.0.2
 csbdeep==0.4.1
 numpy==1.18.1
 scikit-image==0.16.1
 tifffile==2019.7.26.2
 argparse==1.4.0
-tensorflow==1.15.1
+tensorflow==1.13.1
 PyQt5==5.14.1
 napari==0.2.10
 
