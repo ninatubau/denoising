@@ -18,7 +18,7 @@ import sys
 sys.path.append('../../')
 from denoising.src.training import load, train
 from denoising.src.prediction import predict
-
+import faulthandler
 
 class WorkerTr(QThread):
     """
@@ -55,12 +55,15 @@ class WorkerTr(QThread):
         print("Thread training completed")
 
 
+
+
+
 class WorkerPrediction(QThread):
     """
     Worker thread
     """
 
-    def __init__(self, path_data, show_res, stack_nb, filter_data, model_name):
+    def __init__(self, path_data, stack_nb, filter_data, model_name):
         super(WorkerPrediction, self).__init__()
 
         self.path_data = path_data
@@ -76,11 +79,11 @@ class WorkerPrediction(QThread):
         plot = False
         axes = 'XYZ'
         n_tiles = (1, 4, 4)
-        if self.show_res.isChecked():
-            plot = True
         predict(self.path_data, self.model_name, n_tiles, axes, plot, self.stack_nb, self.filter_data)
-
         print("Thread prediction completed")
+        if self.workerTr.isFinished():
+            self.workerTr.exit()
+        self.workerTr.exit()
 
 
 class UiWindow(object):
@@ -96,7 +99,7 @@ class UiWindow(object):
         self.lineEdit_ModPath = QtWidgets.QLineEdit(Window)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.label_Model = QtWidgets.QLabel(Window)
-        self.checkBox_ShowRes = QtWidgets.QCheckBox(Window)
+        #self.checkBox_ShowRes = QtWidgets.QCheckBox(Window)
         self.horizontalLayout_15 = QtWidgets.QHBoxLayout()
         self.toolButton_PredictedPath = QtWidgets.QToolButton(Window)
         self.lineEdit_PredictedPath = QtWidgets.QLineEdit(Window)
@@ -270,8 +273,8 @@ class UiWindow(object):
         self.horizontalLayout_13.addWidget(self.toolButton_PredictedPath)
         self.verticalLayout.addLayout(self.horizontalLayout_13)
         self.horizontalLayout_15.setObjectName("horizontalLayout_15")
-        self.checkBox_ShowRes.setObjectName("checkBox_ShowRes")
-        self.horizontalLayout_15.addWidget(self.checkBox_ShowRes)
+        #self.checkBox_ShowRes.setObjectName("checkBox_ShowRes")
+        #self.horizontalLayout_15.addWidget(self.checkBox_ShowRes)
         self.verticalLayout.addLayout(self.horizontalLayout_15)
         self.label_Model.setObjectName("label_Model")
         self.verticalLayout.addWidget(self.label_Model)
@@ -329,7 +332,7 @@ class UiWindow(object):
         self.pushButton_PredPreview.setText(_translate("Window", "Preview"))
         self.lineEdit_PredictedPath.setText(_translate("Window", "Enter path to save predicted data"))
         self.toolButton_PredictedPath.setText(_translate("Window", "..."))
-        self.checkBox_ShowRes.setText(_translate("Window", "Show results"))
+        #self.checkBox_ShowRes.setText(_translate("Window", "Show results"))
         self.label_Model.setText(_translate("Window", "Model"))
         self.lineEdit_ModPath.setText(_translate("Window", "Enter model path"))
         self.toolButton_ModPath.setText(_translate("Window", "..."))
@@ -370,6 +373,9 @@ class UiWindow(object):
                                  self.spinBox_NbEpochs.value(), self.lineEdit_TrPath.text(), self.lineEdit_ModPath,
                                  patch_size)
         self.workerTr.start()
+        print("Is thread finished: ",self.workerTr.isFinished())
+        if self.workerTr.isFinished():
+            self.workerTr.exit()
 
     def view_images(self, path_data):
         with napari.gui_qt():
@@ -396,7 +402,7 @@ class UiWindow(object):
             self.view_images(path_data)
 
     def prediction(self):
-        self.workerPred = WorkerPrediction(self.lineEdit_PredPath.text(), self.checkBox_ShowRes,
+        self.workerPred = WorkerPrediction(self.lineEdit_PredPath.text(),
                                            self.lineEditStack.text(),
                                            self.comboBoxSelect.currentText(), self.lineEdit_ModPath.text())
         self.workerPred.start()
@@ -404,9 +410,19 @@ class UiWindow(object):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
+    #app = QtCore.QCoreApplication(sys.argv)
     Window = QtWidgets.QDialog()
+    faulthandler.enable()
     ui = UiWindow()
     ui.setup_ui(Window)
     Window.show()
 
+    #grview.show()
+
+    #grview = QGraphicsView()
+    #rc = app.exec_()
+    #del grview
+    #del scene
+    #del app
+    #sys.exit()
     sys.exit(app.exec_())
