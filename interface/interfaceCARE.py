@@ -229,6 +229,23 @@ class UiWindow(object):
         spacer_item5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_14.addItem(spacer_item5)
         self.verticalLayout.addLayout(self.horizontalLayout_14)
+
+        self.verticalLayout_2 = QtWidgets.QVBoxLayout()
+        self.verticalLayout_2.setObjectName("verticalLayout_2")
+        self.horizontalLayout_10 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_10.setObjectName("horizontalLayout_10")
+        self.label_modelName = QtWidgets.QLabel(Window)
+        self.label_modelName.setObjectName("label_modelName")
+        self.horizontalLayout_10.addWidget(self.label_modelName)
+        self.lineEdit_modelName = QtWidgets.QLineEdit(Window)
+        self.lineEdit_modelName.setObjectName("lineEdit_modelName")
+        self.horizontalLayout_10.addWidget(self.lineEdit_modelName)
+        spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_10.addItem(spacerItem6)
+        self.verticalLayout_2.addLayout(self.horizontalLayout_10)
+        self.verticalLayout.addLayout(self.verticalLayout_2)
+
+
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
         spacer_item6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_5.addItem(spacer_item6)
@@ -310,6 +327,8 @@ class UiWindow(object):
         self.retranslateUi(window)
         self.comboBoxTr.setCurrentIndex(-1)
 
+        
+
         QtCore.QMetaObject.connectSlotsByName(window)
 
     def retranslateUi(self, window):
@@ -338,6 +357,8 @@ class UiWindow(object):
         self.toolButton_ModPath.setText(_translate("Window", "..."))
         self.pushButton_Pred.setText(_translate("Window", "PREDICT"))
 
+        self.label_modelName.setText(_translate("Window", "Model name"))
+
         # Connect buttons
         self.toolButton_TrPath.clicked.connect(partial(self.browse_slot, self.lineEdit_TrPath))
         self.pushButtonTr.clicked.connect(self.train)
@@ -349,6 +370,7 @@ class UiWindow(object):
         self.toolButton_ModPath.clicked.connect(partial(self.browse_slot, self.lineEdit_ModPath))
         # self.pushButtonTr.clicked.connect(self.train_fake)
         # self.pushButton_Pred.clicked.connect(self.predict_fake)
+
 
     def debug_print(self, msg):
         """Print the message in the text edit at the bottom of the
