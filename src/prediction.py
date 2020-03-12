@@ -78,13 +78,19 @@ def predict(path_data, model_name, n_tiles, axes, plot_prediction,stack_nb, filt
 	model_name : str	
 		Name of the pre-trained model 
 	n_tiles : tuple
-		Size of tile to split the patches (helps avoidint out of memory problems when predicting
+		Size of tile to split the patches (helps avoid out of memory problems when predicting
 	axes : str
 		Semantic order of the channels
 	plot_prediction : bool
 		True or False whether the prediction is plot or not
 	"""
-	model = CARE(config=None, name=model_name, basedir='models')
+	sep = '/'
+	print(model_name.split(sep)[:-1])
+	model_path = sep.join(model_name.split(sep)[:-1])
+	model_name = model_name.split(sep)[-1]
+
+	print('here is the plot',model_path, model_name)
+	model = CARE(config=None, name=model_name, basedir=model_path)
 
 
 	for file_ in sorted(os.listdir(path_data)):
