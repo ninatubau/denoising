@@ -111,7 +111,7 @@ def load(path_data, axes, validation_split, patch_size, data_name):
     # limit GPU available memory
     # limit_gpu_memory(fraction=1/2)
 
-    data_generation(path_data, axes, patch_size, data_name)
+    #data_generation(path_data, axes, patch_size, data_name)
     (X, Y), (X_val, Y_val), axes = load_training_data('data/' + data_name + '.npz', validation_split, verbose=True)
     return (X, Y), (X_val, Y_val)
 
