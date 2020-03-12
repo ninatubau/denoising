@@ -85,11 +85,9 @@ def predict(path_data, model_name, n_tiles, axes, plot_prediction,stack_nb, filt
 		True or False whether the prediction is plot or not
 	"""
 	sep = '/'
-	print(model_name.split(sep)[:-1])
 	model_path = sep.join(model_name.split(sep)[:-1])
 	model_name = model_name.split(sep)[-1]
 
-	print('here is the plot',model_path, model_name)
 	model = CARE(config=None, name=model_name, basedir=model_path)
 
 
@@ -133,12 +131,13 @@ def reconstruction(model, file_name, path_data, axes,n_tiles, plot_prediction):
 	#restored = np.stack(res,axis=0)
 			
 	end = time.time()
-	print('Prediction time %s sec ' %(end - start))
 	print('Saving file: ',file_name)
 	os.chdir(path_data)
 	os.chdir('..')
 	if not os.path.exists('predicted'):
 		os.makedirs('predicted')
+	else :
+		print('Folder <predicted> already exists, rename the folder.')
 	imsave(os.getcwd()+'/predicted/'+file_name, restored)
 	
 

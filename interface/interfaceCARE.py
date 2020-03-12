@@ -76,10 +76,6 @@ class WorkerPrediction(QThread):
         n_tiles = (1, 4, 4)
         predict(self.path_data, self.model_name, n_tiles, axes, plot, self.stack_nb, self.filter_data)
 
-
-
-
-
 class UiWindow(object):
     def __init__(self):
         self.label_Image = QtWidgets.QLabel(Window)
@@ -373,7 +369,6 @@ class UiWindow(object):
         options |= QtWidgets.QFileDialog.DontUseNativeDialog
         file_name = QtWidgets.QFileDialog.getExistingDirectory(None, "Select directory")
         if file_name:
-            self.debug_print("Setting file name: " + file_name)
             lineEdit.setText(file_name)
 
     def train(self):
@@ -385,7 +380,6 @@ class UiWindow(object):
         self.workerTr.start()
         model_path = os.path.abspath(os.path.join(os.getcwd(), '..'))
         self.lineEdit_ModPath.setText(model_path+'/models/'+self.lineEdit_modelName.text())
-        print("Is thread finished: ", self.workerTr.isFinished())
         if self.workerTr.isFinished():
             self.workerTr.exit()
 
