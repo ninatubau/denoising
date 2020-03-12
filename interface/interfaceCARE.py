@@ -25,14 +25,14 @@ class WorkerTr(QThread):
     Worker thread
     """
 
-    def __init__(self, val_split, tr_steps, nb_epochs, path_data, model_path, patch_size):
+    def __init__(self, val_split, tr_steps, nb_epochs, path_data, model_name, patch_size):
         super(WorkerTr, self).__init__()
 
         self.val_split = val_split
         self.tr_steps = tr_steps
         self.nb_epochs = nb_epochs
         self.path_data = path_data
-        self.model_path = model_path
+        self.model_name = model_name
         self.patch_size = patch_size
 
     def run(self):
@@ -42,17 +42,13 @@ class WorkerTr(QThread):
 
         print("Thread training started")
         axes = 'XYZ'
-        model_name = 'my_model'
         csv_file = 'loss.csv'
         kwargs = {'train_steps_per_epoch': self.tr_steps, 'train_epochs': self.nb_epochs}
         data_name = 'data_prepared'
         (X, Y), (X_val, Y_val) = load(self.path_data, axes, self.val_split, self.patch_size, data_name)
-        train(X, Y, X_val, Y_val, axes, model_name, csv_file, True , self.val_split, self.patch_size,**kwargs)
+        train(X, Y, X_val, Y_val, axes, self.model_name, csv_file, True, self.val_split, self.patch_size, **kwargs)
         # self.lineEdit_ModPath.setText( path_data+model_name )
-        model_path = os.path.abspath(os.path.join(os.getcwd(), '..'))
-        print(model_path)
-        self.model_path.setText(model_path + '/' + model_name)
-        print("Thread training completed")
+
 
 
 
@@ -67,7 +63,6 @@ class WorkerPrediction(QThread):
         super(WorkerPrediction, self).__init__()
 
         self.path_data = path_data
-        self.show_res = show_res
         self.stack_nb = stack_nb
         self.filter_data = filter_data
         self.model_name = model_name
@@ -80,10 +75,9 @@ class WorkerPrediction(QThread):
         axes = 'XYZ'
         n_tiles = (1, 4, 4)
         predict(self.path_data, self.model_name, n_tiles, axes, plot, self.stack_nb, self.filter_data)
-        print("Thread prediction completed")
-        if self.workerTr.isFinished():
-            self.workerTr.exit()
-        self.workerTr.exit()
+
+
+
 
 
 class UiWindow(object):
@@ -92,7 +86,7 @@ class UiWindow(object):
         self.horizontalLayout_12 = QtWidgets.QHBoxLayout()
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.horizontalLayout_11 = QtWidgets.QHBoxLayout()
-        self.progressBar_Pred = QtWidgets.QProgressBar(Window)
+
         self.pushButton_Pred = QtWidgets.QPushButton(Window)
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
         self.toolButton_ModPath = QtWidgets.QToolButton(Window)
@@ -111,7 +105,6 @@ class UiWindow(object):
         self.lineEdit_PredPath = QtWidgets.QLineEdit(Window)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.label_Pred = QtWidgets.QLabel(Window)
-        self.progressBar_Tr = QtWidgets.QProgressBar(Window)
         self.pushButtonTr = QtWidgets.QPushButton(Window)
         self.horizontalLayout_5 = QtWidgets.QHBoxLayout()
         self.spinBox_z = QtWidgets.QSpinBox(Window)
@@ -251,9 +244,6 @@ class UiWindow(object):
         self.horizontalLayout_5.addItem(spacer_item6)
         self.pushButtonTr.setObjectName("pushButtonTr")
         self.horizontalLayout_5.addWidget(self.pushButtonTr)
-        self.progressBar_Tr.setProperty("value", 24)
-        self.progressBar_Tr.setObjectName("progressBar_Tr")
-        self.horizontalLayout_5.addWidget(self.progressBar_Tr)
         spacer_item7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_5.addItem(spacer_item7)
         self.verticalLayout.addLayout(self.horizontalLayout_5)
@@ -307,9 +297,6 @@ class UiWindow(object):
         self.horizontalLayout_4.addItem(spacer_item9)
         self.pushButton_Pred.setObjectName("pushButton_Pred")
         self.horizontalLayout_4.addWidget(self.pushButton_Pred)
-        self.progressBar_Pred.setProperty("value", 24)
-        self.progressBar_Pred.setObjectName("progressBar_Pred")
-        self.horizontalLayout_4.addWidget(self.progressBar_Pred)
         spacer_item10 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_4.addItem(spacer_item10)
         self.verticalLayout.addLayout(self.horizontalLayout_4)
@@ -342,7 +329,7 @@ class UiWindow(object):
         self.label_ValSplit.setText(_translate("Window", "Validation split "))
         self.label_TrSteps.setText(_translate("Window", "Training steps"))
         self.label_NbEpochs.setText(_translate("Window", "Nb epochs"))
-        self.label_PatchSize.setText(_translate("Window", "Patch size (ex 16 64 64) "))
+        self.label_PatchSize.setText(_translate("Window", "Patch size"))
         self.pushButtonTr.setText(_translate("Window", "TRAIN"))
         self.label_Pred.setText(_translate("Window", "PREDICTION"))
         self.lineEdit_PredPath.setText(_translate("Window", "Enter prediction data path"))
@@ -358,6 +345,7 @@ class UiWindow(object):
         self.pushButton_Pred.setText(_translate("Window", "PREDICT"))
 
         self.label_modelName.setText(_translate("Window", "Model name"))
+        #self.lineEdit_modelName.setText(_translate("Window", "my_model"))
 
         # Connect buttons
         self.toolButton_TrPath.clicked.connect(partial(self.browse_slot, self.lineEdit_TrPath))
@@ -392,10 +380,12 @@ class UiWindow(object):
         patch_size = (self.spinBox_x.value(), self.spinBox_y.value(), self.spinBox_z.value())
 
         self.workerTr = WorkerTr(self.doubleSpinBoxTr.value(), self.spinBox_TrSteps.value(),
-                                 self.spinBox_NbEpochs.value(), self.lineEdit_TrPath.text(), self.lineEdit_ModPath,
+                                 self.spinBox_NbEpochs.value(), self.lineEdit_TrPath.text(), self.lineEdit_modelName.text(),
                                  patch_size)
         self.workerTr.start()
-        print("Is thread finished: ",self.workerTr.isFinished())
+        model_path = os.path.abspath(os.path.join(os.getcwd(), '..'))
+        self.lineEdit_ModPath.setText(model_path+'/models/'+self.lineEdit_modelName.text())
+        print("Is thread finished: ", self.workerTr.isFinished())
         if self.workerTr.isFinished():
             self.workerTr.exit()
 
