@@ -4,8 +4,10 @@ MAINTAINER lachiew <whitehead@wehi.edu.au>
 WORKDIR /denoising/
 COPY requirements.txt requirements.txt
 
-RUN apt update
-RUN pip install --upgrade pip
-RUN apt install fontconfig -y
-RUN apt install python3-pyqt5 -y
-RUN pip install -r requirements.txt
+RUN apt update \
+	&& apt install \
+		fontconfig \
+		python3-pyqt5 -y
+
+RUN pip install --upgrade pip \ 
+	&& pip install -r requirements.txt
