@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>544</width>
-    <height>784</height>
+    <height>758</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -262,6 +262,9 @@
          </item>
          <item>
           <widget class="QLineEdit" name="lineEdit_modelName">
+           <property name="styleSheet">
+            <string notr="true">color: rgb(255, 255, 255);</string>
+           </property>
            <property name="text">
             <string>my_model</string>
            </property>
