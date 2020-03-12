@@ -17,17 +17,35 @@ This is an application of CSBDeep network for **denoising microscopy images**. I
 ### Getting started
 - Install [python](https://realpython.com/installing-python/)
 
+- Clone this repository
+```bash
+git clone https://github.com/ninatubau/denoising.git
+```
+
 - Install package (numpy, napari, tensorflow, [csbdeep](http://csbdeep.bioimagecomputing.com/doc/install.html) etc.) 
 ```bash
 pip install -r requirements.txt 
 ```
 OR
-since installing TensorFlow with its dependencies (CUDA, cuDNN) can be challenging, there is a ready-to-use [Docker container](https://hub.docker.com/r/tboo/csbdeep_gpu_docker/) as an alternative to get started more quickly. 
+since installing TensorFlow with its dependencies (CUDA, cuDNN) can be challenging, a Dockerfile is provided as an alternative to get started more quickly.
+ 
+- Installing from Dockerfile
+    - Install Docker and nvidia-docker 
+    - Create a docker image from the dockerfile. From the working directory of this repo:
+    
+    ```
+    docker build -t denoising:1.0 .
+    ``` 
+    This will take care of all the required drivers and dependencies provided your current CUDA drivers are up to date. 
+    
+    Running via the docker container requires a few extra arguments to allow the GUI. <B>Note unfortunately at this point the napari based image viewer is not available when using docker.</B> 
+    
+    It is also often convenient to mount a data directory to the container to allow ease of data transfer - you can put it within the denoising folder but we find this a more convenient solution: 
+  ```
+  nvidia-docker run -it -v /tmp/.X11-unix:/tmp/.X11-unix -v "$(pwd)":/denoising/ -v <YOURDATAPATH>:/data/ -e DISPLAY=unix:1 -u $(id -u):$(id -g) denoising:1.0 /bin/bash
+  ```
+    
 
-- Clone this repository
-```bash
-git clone https://github.com/ninatubau/denoising.git
-```
 ## Data
 
 The dataset has to follow a particular structure as following:
