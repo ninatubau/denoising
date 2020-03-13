@@ -34,7 +34,7 @@ since installing TensorFlow with its dependencies (CUDA, cuDNN) can be challengi
     - Create a docker image from the dockerfile. From the working directory of this repo:
     
     ```
-    docker build -t denoising:1.0 .
+    nvidia-docker build -t denoising:1.0 .
     ``` 
     This will take care of all the required drivers and dependencies provided your current CUDA drivers are up to date. 
     

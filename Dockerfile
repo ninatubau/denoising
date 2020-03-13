@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow:1.14.0-gpu-py3-jupyter
+FROM tensorflow/tensorflow:1.15.0-gpu-py3-jupyter
 
 MAINTAINER lachiew <whitehead@wehi.edu.au>
 WORKDIR /denoising/
