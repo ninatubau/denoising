@@ -24,7 +24,7 @@ import faulthandler
 
 class WorkerTr(QThread):
     """
-    Worker thread
+    Worker thread for training
     """
 
     def __init__(self, val_split, tr_steps, nb_epochs, path_data, model_name, patch_size):
@@ -51,14 +51,9 @@ class WorkerTr(QThread):
         train(X, Y, X_val, Y_val, axes, self.model_name, csv_file, True, self.val_split, self.patch_size, **kwargs)
         # self.lineEdit_ModPath.setText( path_data+model_name )
 
-
-
-
-
-
 class WorkerPrediction(QThread):
     """
-    Worker thread
+    Worker thread for prediction
     """
 
     def __init__(self, path_data, stack_nb, filter_data, model_name):
@@ -82,7 +77,6 @@ class UiWindow(object):
     def __init__(self):
         self.label_Image = QtWidgets.QLabel(Window)
         self.horizontalLayout_12 = QtWidgets.QHBoxLayout()
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.horizontalLayout_11 = QtWidgets.QHBoxLayout()
 
         self.pushButton_Pred = QtWidgets.QPushButton(Window)
@@ -138,7 +132,7 @@ class UiWindow(object):
         self.spinBox_TrSteps.setValue(100)
         self.spinBox_NbEpochs.setValue(100)
 
-        #check if running on docker or local
+        #Check if running on docker or local
         bash_cmd = '''ls -ali / | sed '2!d' |awk {'print $1'}'''
         results = subprocess.run(bash_cmd, shell=True, universal_newlines=True, check=True, stdout=PIPE)
         value_location = int(results.stdout.splitlines()[0])
@@ -147,10 +141,6 @@ class UiWindow(object):
             print('Disabling <Preview> button because running in docker')
             self.pushButton_TrPreview.setDisabled(True)
             self.pushButton_PredPreview.setDisabled(True)
-
-
-
-
 
     def setup_ui(self, window):
         window.setObjectName("Window")
@@ -249,7 +239,6 @@ class UiWindow(object):
         self.verticalLayout_2.addLayout(self.horizontalLayout_10)
         self.verticalLayout.addLayout(self.verticalLayout_2)
 
-
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
         spacer_item6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_5.addItem(spacer_item6)
@@ -313,8 +302,6 @@ class UiWindow(object):
         self.verticalLayout.addLayout(self.horizontalLayout_4)
         self.horizontalLayout_11.setObjectName("horizontalLayout_11")
         self.verticalLayout.addLayout(self.horizontalLayout_11)
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.verticalLayout.addLayout(self.verticalLayout_2)
         self.horizontalLayout_12.setObjectName("horizontalLayout_12")
         self.verticalLayout.addLayout(self.horizontalLayout_12)
         self.label_Image.setStyleSheet("image: url(:/newPrefix/wehi_logo.png);")
@@ -324,8 +311,6 @@ class UiWindow(object):
         self.horizontalLayout_6.addLayout(self.verticalLayout)
         self.retranslateUi(window)
         self.comboBoxTr.setCurrentIndex(-1)
-
-        
 
         QtCore.QMetaObject.connectSlotsByName(window)
 
@@ -369,7 +354,6 @@ class UiWindow(object):
         self.toolButton_ModPath.clicked.connect(partial(self.browse_slot, self.lineEdit_ModPath))
         # self.pushButtonTr.clicked.connect(self.train_fake)
         # self.pushButton_Pred.clicked.connect(self.predict_fake)
-
 
     def debug_print(self, msg):
         """Print the message in the text edit at the bottom of the
@@ -428,22 +412,12 @@ class UiWindow(object):
                                            self.comboBoxSelect.currentText(), self.lineEdit_ModPath.text())
         self.workerPred.start()
 
-
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    #app = QtCore.QCoreApplication(sys.argv)
     Window = QtWidgets.QDialog()
     faulthandler.enable()
     ui = UiWindow()
     ui.setup_ui(Window)
     Window.show()
 
-    #grview.show()
-
-    #grview = QGraphicsView()
-    #rc = app.exec_()
-    #del grview
-    #del scene
-    #del app
-    #sys.exit()
     sys.exit(app.exec_())
