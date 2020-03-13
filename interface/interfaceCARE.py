@@ -9,6 +9,8 @@ import sys
 import os
 import napari
 import numpy
+import subprocess
+from subprocess import PIPE
 
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import QThread
@@ -135,6 +137,19 @@ class UiWindow(object):
         self.doubleSpinBoxTr.setValue(0.2)
         self.spinBox_TrSteps.setValue(100)
         self.spinBox_NbEpochs.setValue(100)
+
+        #check if running on docker or local
+        bash_cmd = '''ls -ali / | sed '2!d' |awk {'print $1'}'''
+        results = subprocess.run(bash_cmd, shell=True, universal_newlines=True, check=True, stdout=PIPE)
+        value_location = int(results.stdout.splitlines()[0])
+
+        if value_location != 2:
+            print('Disabling <Preview> button because running in docker')
+            self.pushButton_TrPreview.setDisabled(True)
+            self.pushButton_PredPreview.setDisabled(True)
+
+
+
 
 
     def setup_ui(self, window):
