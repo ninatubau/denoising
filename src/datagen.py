@@ -55,7 +55,7 @@ def data_generation(data_path,axes,patch_size,data_name):
 	X, Y, XY_axes = create_patches (
 	    raw_data            = raw_data,
 	    patch_size          = patch_size,
-	    n_patches_per_image = 1024,
+	    n_patches_per_image = 100,
 	    save_file           = 'data/'+data_name+'.npz',
 	)
 

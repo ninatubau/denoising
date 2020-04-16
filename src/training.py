@@ -25,7 +25,7 @@ from csbdeep.utils import axes_dict, plot_some, plot_history
 from csbdeep.utils.tf import limit_gpu_memory
 from csbdeep.io import load_training_data
 from csbdeep.models import Config, CARE
-from .datagen import data_generation
+from datagen import data_generation
 import argparse
 import gc
 

@@ -22,6 +22,7 @@ from denoising.src.training import load, train
 from denoising.src.prediction import predict
 import faulthandler
 
+
 class WorkerTr(QThread):
     """
     Worker thread for training
@@ -85,7 +86,6 @@ class UiWindow(object):
         self.lineEdit_ModPath = QtWidgets.QLineEdit(Window)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.label_Model = QtWidgets.QLabel(Window)
-        #self.checkBox_ShowRes = QtWidgets.QCheckBox(Window)
         self.horizontalLayout_15 = QtWidgets.QHBoxLayout()
         self.toolButton_PredictedPath = QtWidgets.QToolButton(Window)
         self.lineEdit_PredictedPath = QtWidgets.QLineEdit(Window)
@@ -280,8 +280,6 @@ class UiWindow(object):
         self.horizontalLayout_13.addWidget(self.toolButton_PredictedPath)
         self.verticalLayout.addLayout(self.horizontalLayout_13)
         self.horizontalLayout_15.setObjectName("horizontalLayout_15")
-        #self.checkBox_ShowRes.setObjectName("checkBox_ShowRes")
-        #self.horizontalLayout_15.addWidget(self.checkBox_ShowRes)
         self.verticalLayout.addLayout(self.horizontalLayout_15)
         self.label_Model.setObjectName("label_Model")
         self.verticalLayout.addWidget(self.label_Model)

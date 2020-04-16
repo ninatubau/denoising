@@ -39,6 +39,8 @@ parser.add_argument('--axes', type=str,default='XYZ',help='Axes to indicate the 
 parser.add_argument('--plot_prediction', type=bool,default =False,help='Plotting images of the prediction : True or False')
 parser.add_argument('--filter_data', type=str, default='all', help ='Filter the data that you want to predict: ch0,ch1, all')
 parser.add_argument('--stack_nb', type=int, default=10, help ='Number of images taking as input')
+parser.add_argument('--folder_name_save', type=str, default='predicted_samples', help ='Name of the folder where the predicted data is saved')
+
 
 def parser_init(parser):
 	"""Initialises the arguments of the script with argparse
@@ -66,9 +68,11 @@ def parser_init(parser):
 	plot_prediction = args.plot_prediction
 	filter_data = args.filter_data
 	stack_nb= args.stack_nb
-	return path_data, model_name, n_tiles, axes, plot_prediction, filter_data, stack_nb
+	folder_name_save = args.folder_name_save
 
-def predict(path_data, model_name, n_tiles, axes, plot_prediction,stack_nb, filter_data):
+	return path_data, model_name, n_tiles, axes, plot_prediction, filter_data, stack_nb, folder_name_save
+
+def predict(path_data, model_name, n_tiles, axes, plot_prediction,stack_nb, filter_data, folder_name_save):
 	"""Predicts the output of the netowrk using a pre-trained model.
 	
 	Parameters
@@ -86,6 +90,8 @@ def predict(path_data, model_name, n_tiles, axes, plot_prediction,stack_nb, filt
 	"""
 	sep = '/'
 	model_path = sep.join(model_name.split(sep)[:-1])
+	#model_path = '/models/'
+	print('-------',model_path)
 	model_name = model_name.split(sep)[-1]
 
 	model = CARE(config=None, name=model_name, basedir=model_path)
@@ -96,13 +102,13 @@ def predict(path_data, model_name, n_tiles, axes, plot_prediction,stack_nb, filt
 		if file_.endswith('.tif') and not pathlib.Path(os.path.dirname(os.getcwd())+'/predicted/'+file_).exists() :
 
 			if filter_data in file_ : 
-				reconstruction(model, file_,path_data,axes,n_tiles, plot_prediction)
+				reconstruction(model, file_,path_data,axes,n_tiles, plot_prediction, folder_name_save)
 
 			elif filter_data=='all':
-				reconstruction(model, file_,path_data,axes,n_tiles, plot_prediction)
+				reconstruction(model, file_,path_data,axes,n_tiles, plot_prediction, folder_name_save)
 
 
-def reconstruction(model, file_name, path_data, axes,n_tiles, plot_prediction):
+def reconstruction(model, file_name, path_data, axes,n_tiles, plot_prediction, folder_name_save):
 	"""Reconstruct the whole image and saves it in a 'predicted' folder. 
 
 	Parameters
@@ -134,11 +140,12 @@ def reconstruction(model, file_name, path_data, axes,n_tiles, plot_prediction):
 	print('Saving file: ',file_name)
 	os.chdir(path_data)
 	os.chdir('..')
-	if not os.path.exists('predicted'):
-		os.makedirs('predicted')
+	name_save_folder = path_data.split
+	if not os.path.exists(folder_name_save):
+		os.makedirs(folder_name_save)
 	else :
 		print('Folder <predicted> already exists, rename the folder.')
-	imsave(os.getcwd()+'/predicted/'+file_name, restored)
+	imsave(os.getcwd() + '/' + folder_name_save +'/'+ file_name, restored)
 	
 
 def plot_results(x,restored):
@@ -159,10 +166,10 @@ def plot_results(x,restored):
 	plt.imshow(np.max(restored,axis=0),cmap='gray')
 	plt.title('Maximum projection restored image (after CARE)')
 	plt.show()
-		    
+
 if __name__ == '__main__':
-	path_data, model_name, n_tiles, axes, plot_prediction, filter_data,stack_nb = parser_init(parser)
-	predict(path_data, model_name, n_tiles,axes, plot_prediction, stack_nb, filter_data)
+	path_data, model_name, n_tiles, axes, plot_prediction, filter_data,stack_nb, folder_name_save = parser_init(parser)
+	predict(path_data, model_name, n_tiles,axes, plot_prediction, stack_nb, filter_data, folder_name_save)
 	if plot_prediction:
 		plot_results(x, restored)
 
